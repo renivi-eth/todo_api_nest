@@ -3,9 +3,7 @@ import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
 
 /**
- * Сервис, проверки соединения к БД при инициализации приложения
- * Имплементируется от OnModuleInit, создаем конструктор на knex
- * Функция onModuleInit вызывается один раз при инициализация модуля (в App.Module), внутри себя вызывает функцию проверки соединения
+ * Сервис проверки соединения с Базой Данных, через OnModuleInit (вызывается сразу при работе с модулем)
  */
 @Injectable()
 export class CheckConnectionService implements OnModuleInit {
