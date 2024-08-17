@@ -1,18 +1,27 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { AuthDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
+import { CreateUserDto } from './dto/auth.dto';
+import { ALREADY_REGISTERED_ERROR } from 'src/lib/variables/exception-error';
+import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('registration')
-  async registration(@Body() dto: AuthDto) {
-    return this.authService.createUser(dto);
+  async registration(@Body() CreateUserDto: CreateUserDto) {
+    const findUser = await this.authService.findUser(CreateUserDto.email);
+
+    if (findUser) {
+      throw new BadRequestException(ALREADY_REGISTERED_ERROR);
+    }
+
+    return this.authService.createUser(CreateUserDto);
   }
 
-  // 200 код, ничего не создаем
   @HttpCode(200)
-  @Post('auth')
-  async login(@Body() dto: AuthDto) {}
+  @Post('login')
+  async login(@Body() CreateUserDto: CreateUserDto) {
+    const user = await this.authService.validateUser(CreateUserDto.email, CreateUserDto.password);
+    return user;
+  }
 }
