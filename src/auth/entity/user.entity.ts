@@ -1,3 +1,6 @@
+/**
+ * UserEntity для работы с Knex
+ */
 interface UserEntity {
   id: string;
   email: string;

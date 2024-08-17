@@ -14,45 +14,65 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * Метод сервиса для создания нового пользователя в БД
+   */
   async createUser(dto: CreateUserDto): Promise<Omit<UserResponseDto, 'password'>> {
-    /**
-     * Функция хэширования пароля
-     */
     const hashPassword = await hash(dto.password, Number(process.env.PASSWORD_SALT));
 
-    const [newUser] = await this.knex
-      .table('user')
-      .insert({ email: dto.email, password: hashPassword })
-      .returning('*');
+    const [newUser]: UserEntity[] = await this.knex.table('user').insert({ email: dto.email, password: hashPassword }).returning('*');
 
     const { password, id, ...UserWithoutPassword } = newUser;
     return UserWithoutPassword;
   }
 
+  /**
+   * Метод сервиса для поиска юзера в БД
+   */
   async findUser(email: string): Promise<UserEntity> {
     const user: UserEntity = await this.knex.table('user').select('*').where({ email }).first();
     return user;
   }
 
-  async validateUser(email: string, password: string): Promise<any> {
+  /**
+   * Метод сервиса для валидации юзера в БД
+   */
+  async validateUser(email: string, password: string): Promise<{ access_token: string }> {
     const findUser = await this.findUser(email);
 
     if (!findUser) {
       throw new UnauthorizedException(USER_NOT_FOUND);
     }
+
+    // Валидация пароля
     const isValidPassword = await compare(password, findUser.password);
 
     if (!isValidPassword) {
       throw new UnauthorizedException(BAD_PASSWORD);
     }
-    console.log(findUser);
     return this.login(findUser.email, findUser.password);
   }
 
+  /**
+   * Метод выдачи токена / аутентификация
+   */
   async login(email: string, password: string) {
     const payload = { email, password };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+  /**
+   * Метод валидация токена, проверка прав доступа / авторизация
+   */
+  async validateToken(token: string) {
+    try {
+      return this.jwtService.verifyAsync(token, {
+        secret: process.env.SECRET_JWT,
+      });
+    } catch (error) {
+      console.error('Error verifying token:');
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

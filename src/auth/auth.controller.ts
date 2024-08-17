@@ -1,12 +1,17 @@
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/auth.dto';
 import { ALREADY_REGISTERED_ERROR } from 'src/lib/variables/exception-error';
-import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * POST регистрация пользователя;
+   */
   @Post('registration')
   async registration(@Body() CreateUserDto: CreateUserDto) {
     const findUser = await this.authService.findUser(CreateUserDto.email);
@@ -18,6 +23,7 @@ export class AuthController {
     return this.authService.createUser(CreateUserDto);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Post('login')
   async login(@Body() CreateUserDto: CreateUserDto) {

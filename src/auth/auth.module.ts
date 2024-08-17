@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
 
+// TODO: исправить секрет;
 @Module({
   imports: [
     JwtModule.register({
@@ -15,5 +16,3 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [AuthService],
 })
 export class AuthModule {}
-
-// 'my-32-character-ultra-secure-and-ultra-long-secret',
