@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate {
     try {
       const decodedData = await this.authService.validateToken(token);
       request.decodedData = decodedData;
+      console.log(request.decodedData);
 
       return true;
     } catch (error) {

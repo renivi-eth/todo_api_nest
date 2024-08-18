@@ -31,6 +31,7 @@ export class AuthService {
    */
   async findUser(email: string): Promise<UserEntity> {
     const user: UserEntity = await this.knex.table('user').select('*').where({ email }).first();
+
     return user;
   }
 
@@ -38,26 +39,26 @@ export class AuthService {
    * Метод сервиса для валидации юзера в БД
    */
   async validateUser(email: string, password: string): Promise<{ access_token: string }> {
-    const findUser = await this.findUser(email);
+    const user = await this.findUser(email);
 
-    if (!findUser) {
+    if (!user) {
       throw new UnauthorizedException(USER_NOT_FOUND);
     }
 
     // Валидация пароля
-    const isValidPassword = await compare(password, findUser.password);
+    const isValidPassword = await compare(password, user.password);
 
     if (!isValidPassword) {
       throw new UnauthorizedException(BAD_PASSWORD);
     }
-    return this.login(findUser.email, findUser.password);
+    return this.login(user.id, user.password);
   }
 
   /**
    * Метод выдачи токена / аутентификация
    */
-  async login(email: string, password: string) {
-    const payload = { email, password };
+  async login(id: string, password: string) {
+    const payload = { id, password };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
@@ -67,9 +68,7 @@ export class AuthService {
    */
   async validateToken(token: string) {
     try {
-      return this.jwtService.verifyAsync(token, {
-        secret: process.env.SECRET_JWT,
-      });
+      return this.jwtService.verifyAsync(token);
     } catch (error) {
       console.error('Error verifying token:');
       throw new UnauthorizedException('Invalid or expired token');
