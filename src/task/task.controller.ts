@@ -12,7 +12,6 @@ export class TaskController {
   @Get()
   async getUserTasks(@Req() request: any) {
     const userID = request.decodedData.id;
-    console.log(userID);
 
     return this.TaskService.getAllTask(userID);
   }
