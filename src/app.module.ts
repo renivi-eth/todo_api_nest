@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
-import { AppController } from './app.controller';
 
 import { TagModule } from './tag/tag.module';
 import { ConfigModule } from '@nestjs/config';
@@ -10,17 +8,24 @@ import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
-    DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'nest_learn/.env',
+
+      // TODO: Указать до файла .env в корне. Учесть что есть build и dev
+      envFilePath: '.env',
     }),
+
+    DatabaseModule,
+
     AuthModule,
     TaskModule,
     TagModule,
   ],
 
-  controllers: [AppController],
-  providers: [AppService],
+  exports: [],
+
+  providers: [],
+
+  controllers: [],
 })
 export class AppModule {}

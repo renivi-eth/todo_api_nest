@@ -3,7 +3,6 @@ import { TaskDto } from './dto/task.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
 import { TaskEntity } from './entity/task.entity';
-import { TaskState } from 'src/lib/variables/task.state';
 
 @Injectable()
 export class TaskService {
@@ -15,8 +14,8 @@ export class TaskService {
   /**
    * Метод Task сервиса для получения всех задач из БД
    */
-  async getAllTask(user_id: string): Promise<TaskEntity[]> {
-    const getAllUserTask: TaskEntity[] = await this.knex.table('task').select('*').where({ user_id: user_id }).returning('*');
+  async getAllTask(user_id: string) {
+    const getAllUserTask = await this.knex.table('task').select('*').where({ user_id: user_id }).returning('*');
     return getAllUserTask;
   }
 
@@ -26,11 +25,10 @@ export class TaskService {
   async createTask(TaskDto: TaskDto, userID: string): Promise<Partial<TaskEntity>> {
     const taskWithUserId = { ...TaskDto, user_id: userID };
 
-    const [newTask] = await this.knex
+    return this.knex
       .table('task')
       .insert(taskWithUserId as Partial<TaskEntity>)
-      .returning('*');
-
-    return newTask;
+      .returning('*')
+      .first();
   }
 }

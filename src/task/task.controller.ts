@@ -5,7 +5,7 @@ import { Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe }
 
 @Controller('task')
 export class TaskController {
-  constructor(private readonly TaskService: TaskService) {}
+  constructor(private readonly taskService: TaskService) {}
 
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
@@ -13,13 +13,13 @@ export class TaskController {
   async getUserTasks(@Req() request: any) {
     const userID = request.decodedData.id;
 
-    return this.TaskService.getAllTask(userID);
+    return this.taskService.getAllTask(userID);
   }
 
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   @Post()
   async createTask(@Body() TaskDto: TaskDto, @Req() request: any) {
-    return this.TaskService.createTask(TaskDto, request.decodedData.id);
+    return this.taskService.createTask(TaskDto, request.decodedData.id);
   }
 }

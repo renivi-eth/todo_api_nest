@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
 
@@ -7,6 +7,8 @@ import { InjectConnection } from 'nest-knexjs';
  */
 @Injectable()
 export class CheckConnectionService implements OnModuleInit {
+  private readonly logger = new Logger(CheckConnectionService.name);
+
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
   async onModuleInit() {
@@ -14,12 +16,15 @@ export class CheckConnectionService implements OnModuleInit {
   }
 
   // TODO: err.code добавить (посмотреть логику работы try / catch)
-  async checkConnection() {
-    try {
-      await this.knex.raw('SELECT NOW()');
-      console.log('Connection with Postgres successful');
-    } catch (err) {
-      console.error('Error with connection PostgreSQL');
-    }
-  }
+  checkConnection = async () => {
+    await this.knex
+      .raw('SELECT NOW()')
+      .then(() => {
+        this.logger.log('Connection with Postgres successful');
+      })
+      .catch((err) => {
+        this.logger.error('Error with connection PostgreSQL');
+        this.logger.error(err);
+      });
+  };
 }

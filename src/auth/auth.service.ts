@@ -2,37 +2,56 @@ import { Knex } from 'knex';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcryptjs';
 import { InjectConnection } from 'nest-knexjs';
-import { CreateUserDto, UserResponseDto } from './dto/auth.dto';
+import { CreateUser_FR_RQ } from './dto/auth.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { BAD_PASSWORD, USER_NOT_FOUND } from 'src/lib/variables/exception-error';
+
+// TODO:
+//  1. Перенести логику работы с юзерами в отдельный сервис
+//  2. Заменить все методы на стрелочные функции
+//  3. Задать правильный нейминг всем типам (про логику нейминга добавить в документацию readme.md)
+//  4. Вынести типы entity в отдельную папку
+//  5. Разобраться с UsePipes
+//  6. Создать декоратор @CurrentUser
+//  7. Поправить модули, соблюдать порядок инициализации imports, exports, providers, controllers
+//  8. app.module в отдельную папку
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectConnection()
-    private readonly knex: Knex<UserEntity>,
+    private readonly knex: Knex,
+
     private readonly jwtService: JwtService,
   ) {}
+
+  // 1 <-> 2 <-> 3
+  // 1 <-> 2 : 1. Request, 2. Response. FR_RQ, FR_RS
+  // 2 <-> 3 : 1. Request, 2. Response. PG_RQ, PG_RS
+  // 2 <-> 4 : 1. Request, 2. Response. CH_RQ, CH_RS
+  // 2 <-> 5 : 1. Request, 2. Response. RD_RQ, RD_RS
 
   /**
    * Метод сервиса для создания нового пользователя в БД
    */
-  async createUser(dto: CreateUserDto): Promise<Omit<UserResponseDto, 'password'>> {
-    const hashPassword = await hash(dto.password, Number(process.env.PASSWORD_SALT));
+  async createUser(userBody: CreateUser_FR_RQ) {
+    const hashPassword = await hash(userBody.password, Number(process.env.PASSWORD_SALT));
 
-    const [newUser]: UserEntity[] = await this.knex.table('user').insert({ email: dto.email, password: hashPassword }).returning('*');
+    type User_PG_RS = {
+      email: string;
+      id: string;
+      created_at: Date;
+      updated_at: Date
+    }
 
-    const { password, id, ...UserWithoutPassword } = newUser;
-    return UserWithoutPassword;
+    return this.knex<UserEntity>('user').insert({ email: userBody.email, password: hashPassword }).returning<User_PG_RS>('email, id, created_at, updated_at').first();
   }
 
   /**
    * Метод сервиса для поиска юзера в БД
    */
   async findUser(email: string): Promise<UserEntity> {
-    const user: UserEntity = await this.knex.table('user').select('*').where({ email }).first();
-
-    return user;
+    return this.knex<UserEntity>('user').select('*').where({ email }).first();
   }
 
   /**
@@ -51,6 +70,7 @@ export class AuthService {
     if (!isValidPassword) {
       throw new UnauthorizedException(BAD_PASSWORD);
     }
+
     return this.login(user.id, user.password);
   }
 

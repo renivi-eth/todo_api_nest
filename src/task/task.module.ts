@@ -5,6 +5,7 @@ import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [AuthModule],
+
   providers: [TaskService],
   controllers: [TaskController],
 })

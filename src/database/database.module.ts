@@ -7,7 +7,8 @@ import { CheckConnectionService } from './check-connection.service';
     KnexModule.forRoot({
       config: {
         client: 'pg',
-        // TODO: не видит user, pass, database (решено, через main.ts imports dotenv, исправить)
+
+        // TODO: Заменить примитивы на переменные окружения process.env
         connection: {
           host: process.env.POSTGRES_HOST,
           user: 'admin',
@@ -18,7 +19,11 @@ import { CheckConnectionService } from './check-connection.service';
       },
     }),
   ],
-  exports: [CheckConnectionService],
+
+  exports: [],
+
   providers: [CheckConnectionService],
+
+  controllers: [],
 })
 export class DatabaseModule {}

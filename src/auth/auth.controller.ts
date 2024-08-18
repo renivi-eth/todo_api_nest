@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/auth.dto';
-import { ALREADY_REGISTERED_ERROR } from 'src/lib/variables/exception-error';
+import { CreateUser_FR_RQ } from './dto/auth.dto';
+import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 
 @Controller('auth')
@@ -8,28 +8,27 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
-   * POST регистрация пользователя;
+   * Регистрация пользователя
    */
   @UsePipes(new ValidationPipe())
   @Post('registration')
-  async registration(@Body() сreateUserDto: CreateUserDto) {
-    const findUser = await this.authService.findUser(сreateUserDto.email);
+  async registration(@Body() createUserDto: CreateUser_FR_RQ) {
+    const user = await this.authService.findUser(createUserDto.email);
 
-    if (findUser) {
-      throw new BadRequestException(ALREADY_REGISTERED_ERROR);
+    if (user) {
+      throw new BadRequestException(ExceptionError.ALREADY_REGISTERED_ERROR);
     }
 
-    return this.authService.createUser(сreateUserDto);
+    return this.authService.createUser(createUserDto);
   }
 
   /**
-   * POST авторизация пользователя;
+   * Авторизация пользователя
    */
   @HttpCode(200)
   @UsePipes(new ValidationPipe())
   @Post('login')
-  async login(@Body() CreateUserDto: CreateUserDto) {
-    const JWT_token = await this.authService.validateUser(CreateUserDto.email, CreateUserDto.password);
-    return JWT_token;
+  async login(@Body() CreateUserDto: CreateUser_FR_RQ) {
+    return this.authService.validateUser(CreateUserDto.email, CreateUserDto.password);
   }
 }

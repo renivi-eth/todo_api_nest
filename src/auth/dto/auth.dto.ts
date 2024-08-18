@@ -1,16 +1,17 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 
 /**
  * DTO, принимает данные от клиента
  */
-export class CreateUserDto {
+export class CreateUser_FR_RQ {
   @IsEmail()
   email: string;
 
   @IsString()
-  //TODO: не работает @Min / @Max
+  @Length(6, 12)
   password: string;
 }
+
 
 /**
  * DTO, которая отдает ответ
