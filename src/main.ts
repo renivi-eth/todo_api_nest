@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const API_VERSION = 'api/v1';
 const port = process.env.APP_PORT || 3030;
