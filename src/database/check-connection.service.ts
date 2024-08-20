@@ -15,7 +15,6 @@ export class CheckConnectionService implements OnModuleInit {
     await this.checkConnection();
   }
 
-  // TODO: err.code добавить (посмотреть логику работы try / catch)
   checkConnection = async () => {
     await this.knex
       .raw('SELECT NOW()')
