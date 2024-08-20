@@ -1,6 +1,7 @@
 import { AuthService } from './auth.service';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { error } from 'console';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,16 +22,18 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
-    try {
-      const decodedData = await this.authService.validateToken(token);
-      request.decodedData = decodedData;
 
-      return true;
-    } catch (error) {
-      if (error instanceof JsonWebTokenError) {
-        throw new UnauthorizedException('Invalid token');
-      }
-      throw error;
-    }
+    return this.authService
+      .validateToken(token)
+      .then((decodedData) => {
+        request.decodedData = decodedData;
+        return true;
+      })
+      .catch((error) => {
+        if (error instanceof JsonWebTokenError) {
+          throw new UnauthorizedException('Invalid Token');
+        }
+        throw error;
+      });
   }
 }
