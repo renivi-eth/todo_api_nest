@@ -1,11 +1,15 @@
 import { AuthService } from './auth.service';
-import { CreateUser_FR_RQ } from './dto/auth.dto';
+import { CreateUser_FR_RQ } from '../dto/auth.dto';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   /**
    * Регистрация пользователя
@@ -13,13 +17,13 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Post('registration')
   async registration(@Body() createUserDto: CreateUser_FR_RQ) {
-    const user = await this.authService.findUser(createUserDto.email);
+    const user = await this.userService.findUser(createUserDto.email);
 
     if (user) {
       throw new BadRequestException(ExceptionError.ALREADY_REGISTERED_ERROR);
     }
 
-    return this.authService.createUser(createUserDto);
+    return this.userService.createUser(createUserDto);
   }
 
   /**

@@ -1,64 +1,30 @@
-import { Knex } from 'knex';
-import { JwtService } from '@nestjs/jwt';
-import { compare, hash } from 'bcryptjs';
-import { InjectConnection } from 'nest-knexjs';
-import { CreateUser_FR_RQ } from './dto/auth.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcryptjs';
+import * as dotenv from 'dotenv';
+import { Knex } from 'knex';
+import { InjectConnection } from 'nest-knexjs';
 import { BAD_PASSWORD, USER_NOT_FOUND } from 'src/lib/variables/exception-error';
+import { UserService } from 'src/user/user.service';
 
-// TODO:
-//  1. Перенести логику работы с юзерами в отдельный сервис
-//  2. Заменить все методы на стрелочные функции
-//  3. Задать правильный нейминг всем типам (про логику нейминга добавить в документацию readme.md)
-//  4. Вынести типы entity в отдельную папку
-//  5. Разобраться с UsePipes
-//  6. Создать декоратор @CurrentUser
-//  7. Поправить модули, соблюдать порядок инициализации imports, exports, providers, controllers
-//  8. app.module в отдельную папку
+// Для использования .env файлов
+dotenv.config();
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectConnection()
     private readonly knex: Knex,
-
+    // Инжектируем для работы с User (create, find)
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
-  // 1 <-> 2 <-> 3
-  // 1 <-> 2 : 1. Request, 2. Response. FR_RQ, FR_RS
-  // 2 <-> 3 : 1. Request, 2. Response. PG_RQ, PG_RS
-  // 2 <-> 4 : 1. Request, 2. Response. CH_RQ, CH_RS
-  // 2 <-> 5 : 1. Request, 2. Response. RD_RQ, RD_RS
-
   /**
-   * Метод сервиса для создания нового пользователя в БД
+   * Метод сервиса для валидации юзера в БД (arrow function)
    */
-  async createUser(userBody: CreateUser_FR_RQ) {
-    const hashPassword = await hash(userBody.password, Number(process.env.PASSWORD_SALT));
-
-    type User_PG_RS = {
-      email: string;
-      id: string;
-      created_at: Date;
-      updated_at: Date
-    }
-
-    return this.knex<UserEntity>('user').insert({ email: userBody.email, password: hashPassword }).returning<User_PG_RS>('email, id, created_at, updated_at').first();
-  }
-
-  /**
-   * Метод сервиса для поиска юзера в БД
-   */
-  async findUser(email: string): Promise<UserEntity> {
-    return this.knex<UserEntity>('user').select('*').where({ email }).first();
-  }
-
-  /**
-   * Метод сервиса для валидации юзера в БД
-   */
-  async validateUser(email: string, password: string): Promise<{ access_token: string }> {
-    const user = await this.findUser(email);
+  validateUser = async (email: string, password: string) => {
+    const user = await this.userService.findUser(email);
 
     if (!user) {
       throw new UnauthorizedException(USER_NOT_FOUND);
@@ -72,26 +38,32 @@ export class AuthService {
     }
 
     return this.login(user.id, user.password);
-  }
+  };
 
   /**
-   * Метод выдачи токена / аутентификация
+   * Метод выдачи токена / аутентификация (arrow function)
    */
-  async login(id: string, password: string) {
+  login = async (id: string, password: string) => {
     const payload = { id, password };
+    console.log(payload);
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
-  }
+  };
   /**
-   * Метод валидация токена, проверка прав доступа / авторизация
+   * Метод валидация токена, проверка прав доступа / авторизация (arrow function)
    */
-  async validateToken(token: string) {
-    try {
-      return this.jwtService.verifyAsync(token);
-    } catch (error) {
+  validateToken = async (token: string) => {
+    return this.jwtService.verifyAsync(token).catch((error) => {
       console.error('Error verifying token:');
-      throw new UnauthorizedException('Invalid or expired token');
-    }
-  }
+      throw new UnauthorizedException('Invalid or expired JWT token');
+    });
+
+    // try {
+    //   return this.jwtService.verifyAsync(token);
+    // } catch (error) {
+    //   console.error('Error verifying token:');
+    //   throw new UnauthorizedException('Invalid or expired JWT token');
+    // }
+  };
 }
