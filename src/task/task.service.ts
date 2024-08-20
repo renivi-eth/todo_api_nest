@@ -8,7 +8,7 @@ import { TaskEntity } from './entity/task.entity';
 export class TaskService {
   constructor(
     @InjectConnection()
-    private readonly knex: Knex<UserEntity>,
+    private readonly knex: Knex,
   ) {}
 
   /**
@@ -22,13 +22,13 @@ export class TaskService {
   /**
    * Метод Task сервиса для создании задачи в БД
    */
-  async createTask(TaskDto: TaskDto, userID: string): Promise<Partial<TaskEntity>> {
+  async createTask(TaskDto: TaskDto, userID: string) {
     const taskWithUserId = { ...TaskDto, user_id: userID };
 
-    return this.knex
-      .table('task')
+    const [newTask] = await this.knex<TaskEntity>('task')
       .insert(taskWithUserId as Partial<TaskEntity>)
-      .returning('*')
-      .first();
+      .returning('*');
+
+    return newTask;
   }
 }
