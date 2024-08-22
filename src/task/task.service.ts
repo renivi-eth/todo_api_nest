@@ -17,14 +17,15 @@ export class TaskService {
    */
   getAllTask = async (user_id: string) => {
     const getAllUserTask = await this.knex.table<TaskEntity>('task').select('*').where({ user_id: user_id }).returning<Task_PG_RS>('*');
+
     return getAllUserTask;
   };
 
   /**
    * Метод Task сервиса для создании задачи в БД
    */
-  createTask = async (TaskDto: Task_FR_RQ, user_id: string) => {
-    const taskWithUserId = { ...TaskDto, user_id: user_id };
+  createTask = async (taskDto: Task_FR_RQ, user_id: string) => {
+    const taskWithUserId = { ...taskDto, user_id: user_id };
 
     const [newTask] = await this.knex<TaskEntity>('task')
       .insert(taskWithUserId as Partial<TaskEntity>)
@@ -36,13 +37,13 @@ export class TaskService {
   /**
    * Метод Task сервиса для обновлении задачи в БД
    */
-  updateTask = async (TaskDto: Task_FR_RQ, task_id: string, user_id: string) => {
+  updateTask = async (taskDto: Task_FR_RQ, task_id: string, user_id: string) => {
     const [updatedTask] = await this.knex<TaskEntity>('task')
       .where({ id: task_id, user_id: user_id })
       .update({
-        name: TaskDto.name,
-        description: TaskDto.description,
-        state: TaskDto.state,
+        name: taskDto.name,
+        description: taskDto.description,
+        state: taskDto.state,
         updated_at: this.knex.fn.now(),
       })
       .returning<Task_PG_RS[]>('*');
