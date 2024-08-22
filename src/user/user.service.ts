@@ -2,8 +2,8 @@ import { Knex } from 'knex';
 import { hash } from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
-import { CreateUser_FR_RQ } from 'src/dto/auth.dto';
-import { User_PG_RS } from 'src/lib/types/user.pg.rs';
+import { User_FR_RQ } from 'src/dto/user.fr.request';
+import { User_PG_RS } from 'src/dto/user.pg.response';
 import { UserEntity } from 'src/lib/types/user.entity';
 
 import * as dotenv from 'dotenv';
@@ -19,7 +19,7 @@ export class UserService {
   /**
    * Метод сервиса для создания нового пользователя в БД (arrow function)
    */
-  createUser = async (userBody: CreateUser_FR_RQ) => {
+  createUser = async (userBody: User_FR_RQ) => {
     const hashPassword = await hash(userBody.password, Number(process.env.PASSWORD_SALT));
 
     // При использовании вставки данных (insert()), отсутствует поддержка first(), поддерживается только в выборках данных;
