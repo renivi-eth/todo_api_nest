@@ -13,15 +13,37 @@
 
 # DTO
 
+1(Frontend) <-> 2 (Backend) <-> 3 (PostgreSQL)
+
+FR-RQ - Frontend Request
+FR-RS - Frontend Response
+
+PG-RQ - PostgreSQL Request
+PG-RS - PostgreSQL Response
+
+Examples:
+
+FR_RQ (Frontend Request) - DTO 
+
+export class CreateUser_FR_RQ {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @Length(6, 20)
+  password: string;
+}
+
+
 # Entity
 
 ## TODO:
 
 1.  Перенести логику работы с юзерами в отдельный сервис - +
-7.  Поправить модули, соблюдать порядок инициализации imports, exports, providers, controllers - +
-8.  app.module в отдельную папку - +
-2.  Заменить все методы на стрелочные функции
-3.  Задать правильный нейминг всем типам (про логику нейминга добавить в документацию readme.md)
-4.  Вынести типы entity в отдельную папку
-5.  Разобраться с UsePipes
-6.  Создать декоратор @CurrentUser
+2.  Поправить модули, соблюдать порядок инициализации imports, exports, providers, controllers - +
+3.  app.module в отдельную папку - +
+4.  Заменить все методы на стрелочные функции -
+5.  Задать правильный нейминг всем типам (про логику нейминга добавить в документацию readme.md)
+6.  Вынести типы entity в отдельную папку
+7.  Разобраться с UsePipes 
+8.  Создать декоратор @CurrentUser
