@@ -45,7 +45,6 @@ export class AuthService {
    */
   login = async (id: string, password: string) => {
     const payload = { id, password };
-    console.log(payload);
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
@@ -58,12 +57,5 @@ export class AuthService {
       console.error('Error verifying token:');
       throw new UnauthorizedException('Invalid or expired JWT token');
     });
-
-    // try {
-    //   return this.jwtService.verifyAsync(token);
-    // } catch (error) {
-    //   console.error('Error verifying token:');
-    //   throw new UnauthorizedException('Invalid or expired JWT token');
-    // }
   };
 }

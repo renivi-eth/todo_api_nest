@@ -1,8 +1,8 @@
 import { AuthService } from './auth.service';
-import { CreateUser_FR_RQ } from '../dto/auth.dto';
+import { User_FR_RQ } from '../dto/user.fr.request';
+import { UserService } from 'src/user/user.service';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +16,7 @@ export class AuthController {
    */
   @UsePipes(new ValidationPipe())
   @Post('registration')
-  async registration(@Body() createUserDto: CreateUser_FR_RQ) {
+  async registration(@Body() createUserDto: User_FR_RQ) {
     const user = await this.userService.findUser(createUserDto.email);
 
     if (user) {
@@ -32,7 +32,7 @@ export class AuthController {
   @HttpCode(200)
   @UsePipes(new ValidationPipe())
   @Post('login')
-  async login(@Body() CreateUserDto: CreateUser_FR_RQ) {
+  async login(@Body() CreateUserDto: User_FR_RQ) {
     return this.authService.validateUser(CreateUserDto.email, CreateUserDto.password);
   }
 }
