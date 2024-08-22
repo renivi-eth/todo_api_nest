@@ -21,17 +21,17 @@ export class TaskController {
 
   @UsePipes(new ValidationPipe())
   @Post()
-  async createTask(@Body() TaskDto: Task_FR_RQ, @Req() request: any) {
-    return this.taskService.createTask(TaskDto, request.decodedData.id);
+  async createTask(@Body() taskDto: Task_FR_RQ, @Req() request: any) {
+    return this.taskService.createTask(taskDto, request.decodedData.id);
   }
 
   @UsePipes(new ValidationPipe())
   @Put(':id')
-  async updateTask(@Body() TaskDto: Task_FR_RQ, @Param() task_id: { id: string }, @Req() request: any) {
+  async updateTask(@Body() taskDto: Task_FR_RQ, @Param() task_id: { id: string }, @Req() request: any) {
     // Деструктурируем и получаем id строкой
     const { id } = task_id;
 
-    return this.taskService.updateTask(TaskDto, id, request.decodedData.id);
+    return this.taskService.updateTask(taskDto, id, request.decodedData.id);
   }
 
   @UsePipes(new ValidationPipe())
