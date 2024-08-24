@@ -14,7 +14,6 @@ export class AuthController {
   /**
    * Регистрация пользователя
    */
-  @UsePipes(new ValidationPipe())
   @Post('registration')
   async registration(@Body() createUserDto: User_FR_RQ) {
     const user = await this.userService.findUser(createUserDto.email);
@@ -30,7 +29,6 @@ export class AuthController {
    * Авторизация пользователя
    */
   @HttpCode(200)
-  @UsePipes(new ValidationPipe())
   @Post('login')
   async login(@Body() CreateUserDto: User_FR_RQ) {
     return this.authService.validateUser(CreateUserDto.email, CreateUserDto.password);

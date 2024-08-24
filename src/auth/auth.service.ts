@@ -1,11 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { compare } from 'bcryptjs';
-import * as dotenv from 'dotenv';
 import { Knex } from 'knex';
+import * as dotenv from 'dotenv';
+import { compare } from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 import { InjectConnection } from 'nest-knexjs';
-import { BAD_PASSWORD, USER_NOT_FOUND } from 'src/lib/variables/exception-error';
 import { UserService } from 'src/user/user.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BAD_PASSWORD, USER_NOT_FOUND } from 'src/lib/variables/exception-error';
 
 // Для использования .env файлов
 dotenv.config();
