@@ -22,6 +22,15 @@ export class TaskService {
   };
 
   /**
+   * Метод Task сервиса для получения всех задач из БД по ID
+   */
+  getTaskById = async (id: string, user_id: string) => {
+    const [TaskById] = await this.knex<TaskEntity>('task').select('*').where({ id, user_id }).returning<Task_PG_RS[]>('*');
+
+    return TaskById;
+  };
+
+  /**
    * Метод Task сервиса для создании задачи в БД
    */
   createTask = async (taskDto: Task_FR_RQ, user_id: string) => {
@@ -52,7 +61,7 @@ export class TaskService {
   };
 
   /**
-   * Метод Task для удаление задачи из БД по ID задачи
+   * Метод Task сервиса для удаление задачи из БД по ID задачи
    */
   deleteTask = async (task_id: string, user_id: string) => {
     const [deletedTask] = await this.knex<TaskEntity>('task').where({ id: task_id, user_id: user_id }).del().returning<Task_PG_RS[]>('*');
