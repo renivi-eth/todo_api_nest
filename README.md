@@ -15,35 +15,36 @@
 
 1(Frontend) <-> 2 (Backend) <-> 3 (PostgreSQL)
 
-FR-RQ - Frontend Request
-FR-RS - Frontend Response
+Frontend <-> Backend
+
+FR_RQ - используется как DTO для входящих запросов (Frontend -> Backend), определена для валидации и типизации данных, которые приходят от клиента (Frontend)
+FR_RS - используется как DTO для ответа от Backend к Frontend, определенна для согласованности структуры данных к клиенту
+
+Backend <-> PostgreSQL
 
 PG-RQ - PostgreSQL Request
 PG-RS - PostgreSQL Response
 
 Examples:
 
-FR_RQ (Frontend Request) - DTO 
+FR_RQ (Frontend Request) - DTO
 
 export class CreateUser_FR_RQ {
-  @IsEmail()
-  email: string;
+@IsEmail()
+email: string;
 
-  @IsString()
-  @Length(6, 20)
-  password: string;
+@IsString()
+@Length(6, 20)
+password: string;
 }
-
-
-# Entity
 
 ## TODO:
 
 1.  Перенести логику работы с юзерами в отдельный сервис - +
 2.  Поправить модули, соблюдать порядок инициализации imports, exports, providers, controllers - +
 3.  app.module в отдельную папку - +
-4.  Заменить все методы на стрелочные функции -
-5.  Задать правильный нейминг всем типам (про логику нейминга добавить в документацию readme.md)
-6.  Вынести типы entity в отдельную папку
-7.  Разобраться с UsePipes 
-8.  Создать декоратор @CurrentUser
+4.  Заменить все методы на стрелочные функции +
+5.  Задать правильный нейминг всем типам (про логику нейминга добавить в документацию readme.md) - +
+6.  Вынести типы entity в отдельную папку - +
+7.  Разобраться с UsePipes - + 
+8.  Создать декоратор @CurrentUser 
