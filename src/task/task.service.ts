@@ -16,6 +16,7 @@ export class TaskService {
    * Метод Task сервиса для получения всех задач из БД
    */
   getAllTask = async (user_id: string) => {
+    // TODO: limit, sort, direction
     const getAllUserTask = await this.knex.table<TaskEntity>('task').select('*').where({ user_id: user_id }).returning<Task_PG_RS>('*');
 
     return getAllUserTask;
