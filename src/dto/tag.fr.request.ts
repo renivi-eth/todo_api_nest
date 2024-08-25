@@ -4,6 +4,6 @@ import { IsString, Length } from 'class-validator';
  */
 export class Tag_FR_RQ {
   @IsString()
-  @Length(2, 30)
+  @Length(2, 50)
   name: string;
 }
