@@ -1,7 +1,7 @@
 import { TagService } from './tag.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Tag_FR_RQ } from 'src/dto/tag.fr.request';
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 
 @UseGuards(AuthGuard)
 @Controller('tag')
@@ -10,9 +10,8 @@ export class TagController {
 
   @Get()
   async getUserTags(@Req() request: any) {
-    // Вытаскиваем user_id
     const user_id = request.decodedData.id;
-    console.log(user_id);
+
     return this.tagService.getAllTag(user_id);
   }
 
