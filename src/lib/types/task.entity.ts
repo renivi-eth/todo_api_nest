@@ -1,7 +1,7 @@
 import { TaskState } from 'src/lib/variables/task.state';
 
 /**
- * TaskEntity (Knex.js) - entity описывает структуру таблицы task
+ * TaskEntity - интерфейс описывает структуру таблицы task
  */
 export interface TaskEntity {
   id: string;

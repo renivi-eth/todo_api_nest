@@ -1,5 +1,5 @@
-import { SortDirection } from '../variables/sort-direction';
 import { TaskState } from '../variables/task.state';
+import { SortDirection } from '../variables/sort-direction';
 
 export interface QueryEntity {
   limit?: string;

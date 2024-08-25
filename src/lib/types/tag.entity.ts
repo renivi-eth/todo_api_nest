@@ -1,3 +1,6 @@
+/**
+ * TagEntity (Knex.js) - интерфейс, описывает структуру таблицы tag
+ */
 export interface TagEntity {
   id: string;
   name: string;

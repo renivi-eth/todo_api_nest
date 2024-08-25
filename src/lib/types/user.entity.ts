@@ -1,5 +1,5 @@
 /**
- * UserEntity (Knex.js) - entity описывает структуру таблицы user 
+ * UserEntity - интерфейс описывает структуру таблицы user
  */
 export interface UserEntity {
   id: string;
