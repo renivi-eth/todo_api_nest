@@ -35,7 +35,6 @@ export class TaskController {
 
   @Put(':id')
   async updateTask(@Body() taskDto: Task_FR_RQ, @Param() task_id: { id: string }, @Req() request: any) {
-    // Деструктурируем id из param {id: string} и получаем id строкой
     const { id } = task_id;
 
     return this.taskService.updateTask(taskDto, id, request.decodedData.id);
@@ -43,7 +42,6 @@ export class TaskController {
 
   @Delete(':id')
   async deleteTask(@Param() task_id: { id: string }, @Req() request: any) {
-    // Деструктурируем id из param {id: string} и получаем id строкой
     const { id } = task_id;
 
     return this.taskService.deleteTask(id, request.decodedData.id);
