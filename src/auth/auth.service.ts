@@ -1,8 +1,6 @@
-import { Knex } from 'knex';
 import * as dotenv from 'dotenv';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { InjectConnection } from 'nest-knexjs';
 import { UserService } from 'src/user/user.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { BAD_PASSWORD, USER_NOT_FOUND } from 'src/lib/variables/exception-error';
@@ -13,8 +11,6 @@ dotenv.config();
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectConnection()
-    private readonly knex: Knex,
     // Инжектируем для работы с User (create, find)
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
