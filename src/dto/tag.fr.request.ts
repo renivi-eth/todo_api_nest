@@ -1,7 +1,6 @@
 import { IsString, Length } from 'class-validator';
-
 /**
- * DTO для входных данных на tag endpoints
+ * DTO для входных данных для /tag
  */
 export class Tag_FR_RQ {
   @IsString()

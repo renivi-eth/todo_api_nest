@@ -2,7 +2,7 @@ import { IsEnum, IsString, IsUUID } from 'class-validator';
 import { TaskState } from 'src/lib/variables/task.state';
 
 /**
- * DTO для входных данных на task endpoints
+ * DTO для входных данных на /task
  */
 export class Task_FR_RQ {
   @IsString()

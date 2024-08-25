@@ -1,5 +1,7 @@
 import { TaskState } from 'src/lib/variables/task.state';
-
+/**
+ * DTO для возвращаемых данных для /task
+ */
 export type Task_PG_RS = {
   id: string;
   name: string;
