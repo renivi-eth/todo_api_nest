@@ -1,6 +1,6 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 /**
  * Сервис проверки соединения с Базой Данных, через OnModuleInit (вызывается сразу при работе с модулем)
