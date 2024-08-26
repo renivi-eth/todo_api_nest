@@ -1,4 +1,4 @@
-import { TaskState } from 'src/lib/variables/task.state';
+import { TaskState } from 'src/lib/variables/task-state';
 
 /**
  * TaskEntity - интерфейс описывает структуру таблицы task

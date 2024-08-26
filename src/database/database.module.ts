@@ -15,7 +15,7 @@ dotenv.config();
         connection: {
           host: process.env.POSTGRES_HOST,
           user: process.env.POSTGRES_USER,
-          port: parseInt(process.env.POSTGRES_PORT),
+          port: Number(process.env.POSTGRES_PORT),
           password: process.env.POSTGRES_PASSWORD,
           database: process.env.POSTGRES_DB,
         },

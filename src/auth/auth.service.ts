@@ -2,14 +2,21 @@ import * as dotenv from 'dotenv';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { BAD_PASSWORD, USER_NOT_FOUND } from 'src/lib/variables/exception-error';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ExceptionError } from 'src/lib/variables/exception-error';
 
 // Для использования .env файлов
 dotenv.config();
 
+type UserJwtPayload = {
+  id: string;
+  password: string;
+};
+
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     // Инжектируем для работы с User (create, find)
     private readonly userService: UserService,
@@ -23,35 +30,32 @@ export class AuthService {
     const user = await this.userService.findUser(email);
 
     if (!user) {
-      throw new UnauthorizedException(USER_NOT_FOUND);
+      throw new UnauthorizedException(ExceptionError.USER_NOT_FOUND);
     }
 
     // Валидация пароля
     const isValidPassword = await compare(password, user.password);
 
     if (!isValidPassword) {
-      throw new UnauthorizedException(BAD_PASSWORD);
+      throw new UnauthorizedException(ExceptionError.BAD_PASSWORD);
     }
 
-    return this.login(user.id, user.password);
+    return this.login({ id: user.id, password: user.password });
   };
 
   /**
    * Метод выдачи токена / аутентификация (arrow function)
    */
-  login = async (id: string, password: string) => {
-    const payload = { id, password };
+  login = async (payload: UserJwtPayload) => {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   };
+
   /**
    * Метод валидация токена, проверка прав доступа / авторизация (arrow function)
    */
-  validateToken = async (token: string) => {
-    return this.jwtService.verifyAsync(token).catch((error) => {
-      console.error('Error verifying token:');
-      throw new UnauthorizedException('Invalid or expired JWT token');
-    });
+  validateToken = async (accessToken: string) => {
+    return this.jwtService.verifyAsync<UserJwtPayload>(accessToken)
   };
 }

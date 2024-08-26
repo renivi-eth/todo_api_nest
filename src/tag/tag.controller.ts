@@ -5,6 +5,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards 
 import { TagsQueryEntity } from 'src/lib/types/tag.query.entity';
 import { TagTaskEntity } from 'src/lib/types/tag.task.entity';
 
+// TODO: Написать декоратор @User вместо использования @Req
+//   Вытаскивать параметры, как в createTag (@Param('tagId') tagId: string)
+
 @UseGuards(AuthGuard)
 @Controller('tag')
 export class TagController {
@@ -17,16 +20,14 @@ export class TagController {
     return this.tagService.getAllTag(user_id, query);
   }
 
-  @Get(':id')
-  async getUserTagById(@Param() tag_id: { id: string }, @Req() request: any) {
-    const { id } = tag_id;
-
-    return this.tagService.getTagById(id, request.decodedData.id);
-  }
-
   @Post()
   async createTag(@Body() tagDto: Tag_FR_RQ, @Req() request: any) {
     return this.tagService.createTag(tagDto, request.decodedData.id);
+  }
+
+  @Get(':tagId')
+  async getUserTagById(@Param('tagId') tagId: string, @Req() request: any) {
+    return this.tagService.getTagById(tagId, request.decodedData.id);
   }
 
   @Put(':id')
@@ -47,10 +48,7 @@ export class TagController {
    * Связь тэга с задачей
    */
   @Post(':tagId/task/:taskId')
-  async tagTaskRelation(@Param() param: TagTaskEntity, @Req() request: any) {
-    const task_id = param.taskId;
-    const tag_id = param.tagId;
-
-    return this.tagService.createRelationTagTask(tag_id, task_id, request.decodedData.id);
+  async tagTaskRelation(@Param() { taskId, tagId }: TagTaskEntity, @Req() request: any) {
+    return this.tagService.createRelationTagTask(tagId, taskId, request.decodedData.id);
   }
 }
