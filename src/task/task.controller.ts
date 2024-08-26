@@ -1,11 +1,10 @@
 import { TaskService } from './task.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Task_FR_RQ } from '../dto/task.fr.request';
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { QueryEntity } from 'src/lib/types/query.entity';
+import { TaskQueryEntity } from 'src/lib/types/task.query.entity';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 
-//TODO: разобраться с request: any (типизация any не подходит) и с модулем (прям детально пойми откуда берется AuthGuard)
-//TODO: фильтрация, сортировка, лимит
+//TODO: разобраться с request: any (типизация any не подходит)
 
 @UseGuards(AuthGuard)
 @Controller('task')
@@ -13,7 +12,7 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  async getUserTasks(@Req() request: any, @Query() query: QueryEntity) {
+  async getUserTasks(@Req() request: any, @Query() query: TaskQueryEntity) {
     // Вытаскиваем user_id
     const user_id = request.decodedData.id;
 
