@@ -17,7 +17,7 @@ export class TaskController {
     // Вытаскиваем user_id
     const user_id = request.decodedData.id;
 
-    return this.taskService.getAllTask(user_id);
+    return this.taskService.getAllTask(user_id, query);
   }
 
   @Get(':id')

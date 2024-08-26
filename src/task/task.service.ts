@@ -4,6 +4,7 @@ import { InjectConnection } from 'nest-knexjs';
 import { Task_FR_RQ } from '../dto/task.fr.request';
 import { TaskEntity } from '../lib/types/task.entity';
 import { Task_PG_RS } from 'src/dto/task.pg.pesponse';
+import { QueryEntity } from 'src/lib/types/query.entity';
 
 @Injectable()
 export class TaskService {
@@ -15,11 +16,25 @@ export class TaskService {
   /**
    * Метод Task сервиса для получения всех задач из БД
    */
-  getAllTask = async (user_id: string) => {
-    // TODO: limit, sort, direction
-    const getAllUserTask = await this.knex.table<TaskEntity>('task').select('*').where({ user_id: user_id }).returning<Task_PG_RS>('*');
+  getAllTask = async (user_id: string, query: QueryEntity = {}) => {
+    const { limit, state, sortProperty, sortDirection } = query;
 
-    return getAllUserTask;
+    let queryBuilder = this.knex.table<TaskEntity>('task').where({ user_id });
+
+    if (limit) {
+      queryBuilder.limit(parseInt(limit));
+    }
+
+    if (state) {
+      queryBuilder.where({ state });
+    }
+
+    if (sortProperty) {
+      queryBuilder.orderBy(sortProperty, sortDirection || 'asc');
+    }
+
+    const tasks = await queryBuilder.select('*').returning<Task_PG_RS>('*');
+    return tasks;
   };
 
   /**
