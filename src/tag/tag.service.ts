@@ -4,6 +4,7 @@ import { InjectConnection } from 'nest-knexjs';
 import { Tag_FR_RQ } from 'src/dto/tag.fr.request';
 import { Tag_PG_RS } from 'src/dto/tag.pg.response';
 import { TagEntity } from 'src/lib/types/tag.entity';
+import { TagsQueryEntity } from 'src/lib/types/tag.query.entity';
 
 @Injectable()
 export class TagService {
@@ -15,10 +16,21 @@ export class TagService {
   /**
    * Метод Tag сервиса для получения всех тэгов из БД
    */
-  getAllTag = async (user_id: string) => {
-    const allTag = await this.knex.table<TagEntity>('tag').select('*').where({ user_id: user_id }).returning<Tag_PG_RS>('*');
+  getAllTag = async (user_id: string, query: TagsQueryEntity = {}) => {
+    const { limit, sortProperty, sortDirection } = query;
 
-    return allTag;
+    const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id });
+
+    if (limit) {
+      queryBuilder.limit(parseInt(limit));
+    }
+
+    if (sortProperty) {
+      queryBuilder.orderBy(sortProperty, sortDirection || 'asc');
+    }
+
+    const tags = await queryBuilder.select('*').returning<Tag_PG_RS>('*');
+    return tags;
   };
 
   getTagById = async (id: string, user_id: string) => {
