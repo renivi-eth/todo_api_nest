@@ -3,13 +3,12 @@ import { InjectConnection } from 'nest-knexjs';
 import { Tag_FR_RQ } from 'src/dto/tag.fr.request';
 import { Tag_PG_RS } from 'src/dto/tag.pg.response';
 import { TagEntity } from 'src/lib/types/tag.entity';
+import { Task_PG_RS } from 'src/dto/task.pg.pesponse';
 import { TaskEntity } from 'src/lib/types/task.entity';
+import { Task_Tag_PG_RS } from 'src/dto/task.tag.pg.response';
 import { TagsQueryEntity } from 'src/lib/types/tag.query.entity';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { TagTaskEntity } from 'src/lib/types/tag.task.entity';
-import { Task_PG_RS } from 'src/dto/task.pg.pesponse';
-import { Task_Tag_PG_RS } from 'src/dto/task.tag.pg.response';
 
 @Injectable()
 export class TagService {
@@ -111,7 +110,6 @@ export class TagService {
     if (!createRelations) {
       Logger.log('Something went wrong');
     }
-
     return createRelations;
   };
 }
