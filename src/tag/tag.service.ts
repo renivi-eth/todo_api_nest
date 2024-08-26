@@ -98,6 +98,7 @@ export class TagService {
     if (!checkTagById) {
       throw new UnauthorizedException(ExceptionError.TAG_NOT_FOUND);
     }
+
     const existingRelation = await this.knex('task_tag').select('*').where({ task_id, tag_id }).returning<Task_Tag_PG_RS>('*');
 
     if (existingRelation) {
@@ -105,7 +106,6 @@ export class TagService {
     }
 
     // Если задача / тэг принадлежат пользователю И (!) такой связи еще нет, создаем связь
-
     const [createRelations] = await this.knex('task_tag').insert({ task_id, tag_id }).returning<Task_Tag_PG_RS[]>('*');
 
     if (!createRelations) {
