@@ -27,7 +27,6 @@ export class UserService {
       .insert({ email: userBody.email, password: hashPassword })
       .returning<User_PG_RS[]>(['email', 'id', 'created_at', 'updated_at']);
 
-    console.log(newUser);
     return newUser;
   };
 
