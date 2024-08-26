@@ -9,6 +9,7 @@ import { Task_Tag_PG_RS } from 'src/dto/task.tag.pg.response';
 import { TagsQueryEntity } from 'src/lib/types/tag.query.entity';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { SortDirection } from 'src/lib/variables/sort-direction';
 
 @Injectable()
 export class TagService {
@@ -20,41 +21,38 @@ export class TagService {
   /**
    * Метод Tag сервиса для получения всех тэгов из БД
    */
-  getAllTag = async (user_id: string, query: TagsQueryEntity = {}) => {
+  getAllTag = async (userId: string, query: TagsQueryEntity) => {
     const { limit, sortProperty, sortDirection } = query;
 
-    const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id });
+    const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id: userId });
 
     if (limit) {
       queryBuilder.limit(parseInt(limit));
     }
 
-    if (sortProperty) {
-      queryBuilder.orderBy(sortProperty, sortDirection || 'asc');
-    }
+    const tags = await queryBuilder.select('*').orderBy(sortProperty, sortDirection).returning<Tag_PG_RS>('*');
 
-    const tags = await queryBuilder.select('*').returning<Tag_PG_RS>('*');
     return tags;
   };
 
   getTagById = async (id: string, user_id: string) => {
-    const [TagById] = await this.knex<TagEntity>('tag').select('*').where({ id: id, user_id }).returning<Tag_PG_RS[]>('*');
+    const [tag] = await this.knex<TagEntity>('tag').select('*').where({ id: id, user_id }).returning<Tag_PG_RS[]>('*');
 
-    return TagById;
+    return tag;
   };
 
   /**
    * Метод Tag сервиса для создания нового тэга в БД
    */
   createTag = async (tagDto: Tag_FR_RQ, user_id: string) => {
-    const [newTag] = await this.knex<TagEntity>('tag')
+    const [tag] = await this.knex<TagEntity>('tag')
       .insert({
         name: tagDto.name,
         user_id: user_id,
       })
       .returning<Tag_PG_RS[]>('*');
 
-    return newTag;
+    return tag;
   };
 
   /**
@@ -98,6 +96,8 @@ export class TagService {
       throw new UnauthorizedException(ExceptionError.TAG_NOT_FOUND);
     }
 
+    // TODO: В момент вставки выдаст ошибку, если такая связь уже существует. Проверять не нужно, нужно отловить ошибку
+
     const existingRelation = await this.knex('task_tag').select('*').where({ task_id, tag_id }).returning<Task_Tag_PG_RS>('*');
 
     if (existingRelation) {
@@ -107,9 +107,6 @@ export class TagService {
     // Если задача / тэг принадлежат пользователю И (!) такой связи еще нет, создаем связь
     const [createRelations] = await this.knex('task_tag').insert({ task_id, tag_id }).returning<Task_Tag_PG_RS[]>('*');
 
-    if (!createRelations) {
-      Logger.log('Something went wrong');
-    }
     return createRelations;
   };
 }

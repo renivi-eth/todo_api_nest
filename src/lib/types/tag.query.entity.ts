@@ -1,5 +1,7 @@
-import { IsEnum, IsNumber, IsString, Length } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { SortDirection } from '../variables/sort-direction';
+
+// TODO: Найминг и переработать валидацию
 
 export class TagsQueryEntity {
   @IsString()
@@ -10,5 +12,5 @@ export class TagsQueryEntity {
   sortProperty?: string;
 
   @IsEnum(SortDirection)
-  sortDirection?: SortDirection;
+  sortDirection = SortDirection.ASC;
 }

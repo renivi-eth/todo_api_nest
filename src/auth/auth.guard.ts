@@ -27,8 +27,9 @@ export class AuthGuard implements CanActivate {
       })
       .catch((error) => {
         if (error instanceof JsonWebTokenError) {
-          throw new UnauthorizedException('Invalid Token');
+          throw new UnauthorizedException('Invalid or expired JWT token');
         }
+
         throw error;
       });
   };
