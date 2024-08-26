@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError } from '@nestjs/jwt';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
