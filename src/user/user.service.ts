@@ -2,8 +2,8 @@ import { Knex } from 'knex';
 import { hash } from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
-import { User_FR_RQ } from 'src/dto/user.fr.request';
-import { User_PG_RS } from 'src/dto/user.pg.response';
+import { User_FR_RQ } from 'src/dto/user-fr-request';
+import { User_PG_RS } from 'src/dto/user-pg-response';
 import { UserEntity } from 'src/lib/types/user.entity';
 
 import * as dotenv from 'dotenv';
@@ -23,6 +23,7 @@ export class UserService {
     const hashPassword = await hash(userBody.password, Number(process.env.PASSWORD_SALT));
 
     // При использовании вставки данных (insert()), отсутствует поддержка first(), поддерживается только в выборках данных;
+    // TODO: https://docs.nestjs.com/techniques/serialization
     const [newUser] = await this.knex<UserEntity>('user')
       .insert({ email: userBody.email, password: hashPassword })
       .returning<User_PG_RS[]>(['email', 'id', 'created_at', 'updated_at']);
