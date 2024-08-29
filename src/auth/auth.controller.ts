@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { User_FR_RQ } from '../dto/user.fr.request';
+import { User_FR_RQ } from '../dto/user-fr-request';
 import { UserService } from 'src/user/user.service';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';

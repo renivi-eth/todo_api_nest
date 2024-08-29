@@ -2,16 +2,12 @@ import * as dotenv from 'dotenv';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { UserJwtPayload } from 'src/lib/types/user-jwt-payload';
 import { ExceptionError } from 'src/lib/variables/exception-error';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 
 // Для использования .env файлов
 dotenv.config();
-
-type UserJwtPayload = {
-  id: string;
-  password: string;
-};
 
 @Injectable()
 export class AuthService {
@@ -56,6 +52,6 @@ export class AuthService {
    * Метод валидация токена, проверка прав доступа / авторизация (arrow function)
    */
   validateToken = async (accessToken: string) => {
-    return this.jwtService.verifyAsync<UserJwtPayload>(accessToken)
+    return this.jwtService.verifyAsync<UserJwtPayload>(accessToken);
   };
 }
