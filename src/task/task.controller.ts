@@ -1,7 +1,7 @@
 import { TaskService } from './task.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Task_FR_RQ } from '../dto/task.fr.request';
-import { TaskQueryEntity } from 'src/lib/types/task.query.entity';
+import { Task_FR_RQ } from '../dto/task-fr-request';
+import { TaskQuery } from 'src/lib/types/task-query';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 
 //TODO: разобраться с request: any (типизация any не подходит)
@@ -12,7 +12,7 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  async getUserTasks(@Req() request: any, @Query() query: TaskQueryEntity) {
+  async getUserTasks(@Req() request: any, @Query() query: TaskQuery) {
     // Вытаскиваем user_id
     const user_id = request.decodedData.id;
 
