@@ -1,11 +1,11 @@
-import { TaskState } from '../variables/task-state';
-import { SortDirection } from '../variables/sort-direction';
-import { IsEnum, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
-
-// TODO: Разобраться с 'class-transformer' и сделать декоратор @ToInt
+import { IsEnum, IsNumber, Max, Min } from 'class-validator';
+import { SortDirection } from '../variables/sort-direction';
+import { SortTagProperty } from '../variables/sort-tag-property';
+import { TaskState } from '../variables/task-state';
 
 export class TaskQuery {
+  // TODO: Разобраться с 'class-transformer' и сделать декоратор @ToInt
   @IsNumber()
   @Min(0)
   @Max(100)
@@ -15,8 +15,9 @@ export class TaskQuery {
   @IsEnum(TaskState)
   state?: TaskState;
 
+  // Указать по дефолту значение
   @IsEnum(SortTagProperty)
-  sortProperty = SortTagProperty.CREATED_AT;
+  sortProperty?: SortTagProperty.CREATED_AT;
 
   @IsEnum(SortDirection)
   sortDirection?: SortDirection;
