@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { TagModule } from '../tag/tag.module';
 import { ConfigModule } from '@nestjs/config';
 import { TaskModule } from '../task/task.module';
