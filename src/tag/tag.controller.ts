@@ -1,9 +1,9 @@
 import { TagService } from './tag.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Tag_FR_RQ } from 'src/dto/tag.fr.request';
+import { Tag_FR_RQ } from 'src/dto/tag-fr-request';
+import { TagTaskEntity } from 'src/lib/types/tag-task-entity';
+import { TagsQueryEntity } from 'src/lib/types/tag-query-entity';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-import { TagsQueryEntity } from 'src/lib/types/tag.query.entity';
-import { TagTaskEntity } from 'src/lib/types/tag.task.entity';
 
 // TODO: Написать декоратор @User вместо использования @Req
 //   Вытаскивать параметры, как в createTag (@Param('tagId') tagId: string)
