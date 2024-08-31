@@ -10,7 +10,6 @@ import { DatabaseModule } from '../database/database.module';
     ConfigModule.forRoot({
       isGlobal: true,
 
-      // TODO: Указать до файла .env в корне. Учесть что есть build и dev
       envFilePath: '.env',
     }),
 
