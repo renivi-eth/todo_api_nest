@@ -1,18 +1,16 @@
-import * as dotenv from 'dotenv';
 import { compare } from 'bcryptjs';
+import * as dotenv from 'dotenv';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { UserJwtPayload } from 'src/lib/types/user-jwt-payload';
 import { ExceptionError } from 'src/lib/variables/exception-error';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 // Для использования .env файлов
 dotenv.config();
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
-
   constructor(
     // Инжектируем для работы с User (create, find)
     private readonly userService: UserService,
