@@ -19,4 +19,7 @@ export enum ExceptionError {
 
   // Ошибка, если связь между задачей и тэгом уже существует в БД (TagService)
   RELATION_ALREADY_EXIST = 'Relation already exist',
+
+  // Ошибка, если при использовании декоратора @CurrentUser() decodedData отсутствует 
+  DECODED_DATA_EMPTY = 'DecodedData is empty'
 }
