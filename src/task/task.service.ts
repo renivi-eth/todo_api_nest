@@ -5,6 +5,7 @@ import { TaskEntity } from '../lib/types/task.entity';
 import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
 import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
+import { SortDirection } from '../lib/variables/sort-direction';
 
 @Injectable()
 export class TaskService {
@@ -14,12 +15,12 @@ export class TaskService {
   ) {}
 
   /**
-   * Метод Task сервиса для получения всех задач из БД
+   * Получение task по фильтрам
    */
-  getAllTask = async (userId: string, query: TaskQueryDTO = {}) => {
+  getAllTask = async (userId: string, query: TaskQueryDTO) => {
     const { limit, state, sortProperty, sortDirection } = query;
 
-    let queryBuilder = this.knex.table<TaskEntity>('task').where({ user_id: userId });
+    const queryBuilder = this.knex.table<TaskEntity>('task').where({ user_id: userId });
 
     if (limit) {
       queryBuilder.limit(parseInt(limit));
@@ -30,41 +31,42 @@ export class TaskService {
     }
 
     if (sortProperty) {
-      queryBuilder.orderBy(sortProperty, sortDirection || 'ASC');
+      queryBuilder.orderBy(sortProperty, sortDirection ?? SortDirection.ASC);
     }
 
-    const tasks = await queryBuilder.select('*').returning<Task_PG_RS>('*');
-
-    return tasks;
+    return queryBuilder.select('*').returning<Task_PG_RS>('*');
   };
 
   /**
-   * Метод Task сервиса для получения всех задач из БД по ID
+   * Получение task по task_id
    */
   getTaskById = async (id: string, userId: string) => {
-    const [TaskById] = await this.knex<TaskEntity>('task').select('*').where({ id, user_id: userId }).returning<Task_PG_RS[]>('*');
+    const [task] = await this.knex<TaskEntity>('task').select('*').where({ id, user_id: userId }).returning<Task_PG_RS[]>('*');
 
-    return TaskById;
+    return task;
   };
 
   /**
    * Метод Task сервиса для создания задачи в БД
    */
   createTask = async (taskDto: Task_FR_RQ, userId: string) => {
-    const taskWithUserId = { ...taskDto, user_id: userId };
-
-    const [newTask] = await this.knex<TaskEntity>('task')
-      .insert(taskWithUserId as Partial<TaskEntity>)
+    const [task] = await this.knex<TaskEntity>('task')
+      .insert({
+        user_id: userId,
+        name: taskDto.name,
+        state: taskDto.state,
+        description: taskDto.description,
+      })
       .returning<Task_PG_RS[]>('*');
 
-    return newTask;
+    return task;
   };
 
   /**
    * Метод Task сервиса для обновления задачи в БД
    */
   updateTask = async (taskDto: Task_FR_RQ, task_id: string, userId: string) => {
-    const [updatedTask] = await this.knex<TaskEntity>('task')
+    const [task] = await this.knex<TaskEntity>('task')
       .where({ id: task_id, user_id: userId })
       .update({
         name: taskDto.name,
@@ -74,15 +76,15 @@ export class TaskService {
       })
       .returning<Task_PG_RS[]>('*');
 
-    return updatedTask;
+    return task;
   };
 
   /**
    * Метод Task сервиса для удаление задачи из БД по ID задачи
    */
-  deleteTask = async (task_id: string, userId: string) => {
-    const [deletedTask] = await this.knex<TaskEntity>('task').where({ id: task_id, user_id: userId }).del().returning<Task_PG_RS[]>('*');
+  deleteTask = async (taskId: string, userId: string) => {
+    const [task] = await this.knex<TaskEntity>('task').where({ id: taskId, user_id: userId }).delete<Task_PG_RS[]>('*')
 
-    return deletedTask;
+    return task;
   };
 }

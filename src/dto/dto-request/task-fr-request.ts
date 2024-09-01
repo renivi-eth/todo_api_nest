@@ -1,19 +1,19 @@
 import { TaskState } from 'src/lib/variables/task-state';
 import { IsEnum, IsString, Length } from 'class-validator';
 /**
- * DTO для валидации входных данных на /task
+ * DTO для валидации входных данных на создание таски
  */
 export class Task_FR_RQ {
-  // Валидация name (текстовое название задачи) - строка, длина от 0 до 30 символов
+  // Имя задачи
   @IsString()
   @Length(0, 30)
   name: string;
 
-  // Валидация description - текстовое описание тега - string
+  // Описание задачи
   @IsString()
   description: string;
 
-  // Валидация состояния задачи, в виде enum - backlog, in-progress, done
+  // Состояния задачи
   @IsEnum(TaskState)
   state: TaskState;
 }

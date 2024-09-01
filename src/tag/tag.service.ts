@@ -6,7 +6,7 @@ import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
 import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
 import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { ExceptionError } from 'src/lib/variables/exception-error';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
 import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 
@@ -26,12 +26,10 @@ export class TagService {
     const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id: userId });
 
     if (limit) {
-      queryBuilder.limit(parseInt(limit));
+      queryBuilder.limit(limit);
     }
 
-    const tags = await queryBuilder.select('*').orderBy(sortProperty, sortDirection).returning<Tag_PG_RS>('*');
-
-    return tags;
+    return queryBuilder.select('*').orderBy(sortProperty, sortDirection).returning<Tag_PG_RS>('*');
   };
 
   getTagById = async (id: string, user_id: string) => {
@@ -58,7 +56,7 @@ export class TagService {
    * Метод Tag сервиса для удаление всех тэгов из БД по ID тэга
    */
   updateTag = async (tagDto: Tag_FR_RQ, tag_id: string, user_id: string) => {
-    const [updatedTag] = await this.knex<TagEntity>('tag')
+    const [tag] = await this.knex<TagEntity>('tag')
       .where({ id: tag_id, user_id: user_id })
       .update({
         name: tagDto.name,
@@ -66,7 +64,7 @@ export class TagService {
       })
       .returning<Tag_PG_RS[]>('*');
 
-    return updatedTag;
+    return tag;
   };
 
   /**
@@ -82,30 +80,36 @@ export class TagService {
    * Метод Tag для создания связи между тэгом и задачей
    */
   createRelationTagTask = async (tag_id: string, task_id: string, user_id: string) => {
-    const taskQuery = this.knex<TaskEntity>('task').select('id').where({ id: task_id, user_id }).returning<Task_PG_RS>('id');
-    const tagQuery = this.knex<TagEntity>('tag').select('id').where({ id: tag_id, user_id }).returning<Tag_PG_RS>('id');
+    const [task, tag] = await Promise.all([
+      this.knex<TaskEntity>('task').select('id').where({ id: task_id, user_id }).returning<Task_PG_RS>('id'),
+      this.knex<TagEntity>('tag').select('id').where({ id: tag_id, user_id }).returning<Tag_PG_RS>('id'),
+    ]);
 
-    const [checkTaskById, checkTagById] = await Promise.all([taskQuery, tagQuery]);
-
-    if (!checkTaskById) {
+    if (!task) {
       throw new UnauthorizedException(ExceptionError.TASK_NOT_FOUND);
     }
 
-    if (!checkTagById) {
+    if (!tag) {
       throw new UnauthorizedException(ExceptionError.TAG_NOT_FOUND);
     }
 
     // TODO: В момент вставки выдаст ошибку, если такая связь уже существует. Проверять не нужно, нужно отловить ошибку
 
-    const existingRelation = await this.knex('task_tag').select('*').where({ task_id, tag_id }).returning<Task_Tag_PG_RS>('*');
-
-    if (existingRelation) {
-      return new UnauthorizedException(ExceptionError.RELATION_ALREADY_EXIST);
-    }
+    // const existingRelation = await this.knex('task_tag').select('*').where({ task_id, tag_id }).returning<Task_Tag_PG_RS>('*');
+    //
+    // if (existingRelation) {
+    //   return new UnauthorizedException(ExceptionError.RELATION_ALREADY_EXIST);
+    // }
 
     // Если задача / тэг принадлежат пользователю И (!) такой связи еще нет, создаем связь
-    const [createRelations] = await this.knex('task_tag').insert({ task_id, tag_id }).returning<Task_Tag_PG_RS[]>('*');
+    const [relations] = await this.knex('task_tag').insert({ task_id, tag_id }).returning<Task_Tag_PG_RS[]>('*').catch((err) => {
+      if (err.code = 123) {
+        throw new UnauthorizedException(ExceptionError.RELATION_ALREADY_EXIST)
+      }
 
-    return createRelations;
+      throw new InternalServerErrorException('Database error')
+    })
+
+    return relations;
   };
 }

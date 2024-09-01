@@ -3,6 +3,7 @@ import { UserService } from 'src/user/user.service';
 import { User_FR_RQ } from '../dto/dto-request/user-fr-request';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, ClassSerializerInterceptor, Controller, HttpCode, Post, UseInterceptors } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +30,7 @@ export class AuthController {
   /**
    * Авторизация пользователя
    */
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() CreateUserDto: User_FR_RQ) {
     return this.authService.validateUser(CreateUserDto.email, CreateUserDto.password);

@@ -1,27 +1,28 @@
-import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 
-export function ToInt(validationOptions?: ValidationOptions) {
-  // Возвращаем фабричную функцию, target - то к чему применяем (TaskQuery), propertyKey(limit) - ключ свойства
-  return function (target: Object, propertyKey: string) {
-    // Регистрируем декоратор
-    registerDecorator({
-      name: 'toInt',
-      target: target.constructor,
-      propertyName: propertyKey,
-      options: validationOptions,
-      validator: {
-        // value принимает из DTO TaskQuery limit?: string
-        validate(value: string, args: ValidationArguments) {
-          const limitToInt = Number(value);
+// TODO:
+//  Заменить типы, там где используется этот трансформер
 
-          // True если тип числом, целое число, больше 0 и меньше 100
-          return typeof limitToInt === 'number' && Number.isInteger(limitToInt) && limitToInt > 0 && limitToInt <= 100;
-        },
-        // Если не проходим проверку (false), отдаем ошибку валидации
-        defaultMessage(args: ValidationArguments) {
-          return `Limit must be an Integer between 1 and 100`;
-        },
-      },
-    });
-  };
+/**
+ * Трансформирует строку в number.
+ *
+ * Важно: необязательно получится валидное число,
+ * для валидации нужно использовать class-validator.
+ */
+export function TransformStringToNumber(): PropertyDecorator {
+  return Transform((params: TransformFnParams) => {
+    if (!params.value) {
+      // данную строку не получится трансформировать в number
+      return params.value;
+    }
+
+    if (Number.isFinite(+params.value)) {
+      return +params.value;
+    }
+
+    // TODO: Проверить что это работает
+    throw new Error(`${params.key} can't transform to number`)
+    // данную строку не получится трансформировать в number
+    // return value;
+  });
 }
