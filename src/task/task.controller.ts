@@ -1,7 +1,7 @@
 import { TaskService } from './task.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Task_FR_RQ } from '../dto/task-fr-request';
-import { TaskQuery } from 'src/lib/types/task-query';
+import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
+import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
 import { CurrentUser } from 'src/lib/decorators/current-user';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
@@ -11,7 +11,7 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  async getUserTasks(@CurrentUser() userId: string, @Query() query: TaskQuery) {
+  async getUserTasks(@CurrentUser() userId: string, @Query() query: TaskQueryDTO) {
     return this.taskService.getAllTask(userId, query);
   }
 
