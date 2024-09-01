@@ -1,5 +1,5 @@
-import { compare } from 'bcryptjs';
 import * as dotenv from 'dotenv';
+import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { UserJwtPayload } from 'src/lib/types/user-jwt-payload';

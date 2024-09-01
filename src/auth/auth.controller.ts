@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
-import { User_FR_RQ } from '../dto/user-fr-request';
+import { User_FR_RQ } from '../dto/dto-request/user-fr-request';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, ClassSerializerInterceptor, Controller, HttpCode, Post, UseInterceptors } from '@nestjs/common';
 
