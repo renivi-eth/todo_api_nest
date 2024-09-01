@@ -1,14 +1,14 @@
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
+import { TagEntity } from 'src/lib/types/tag.entity';
+import { TaskEntity } from 'src/lib/types/task.entity';
 import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
 import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
-import { TagEntity } from 'src/lib/types/tag.entity';
-import { Task_PG_RS } from 'src/dto/dto-response/task-pg-pesponse';
-import { TaskEntity } from 'src/lib/types/task.entity';
-import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
-import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
+import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
+import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 
 @Injectable()
 export class TagService {
