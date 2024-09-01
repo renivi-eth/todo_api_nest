@@ -5,8 +5,12 @@ import { TagTaskEntity } from 'src/lib/types/tag-task-entity';
 import { TagsQueryEntity } from 'src/lib/types/tag-query-entity';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 
+import { CurrentUser } from 'src/lib/decorators/current-user';
+
 // TODO: Написать декоратор @User вместо использования @Req
 //   Вытаскивать параметры, как в createTag (@Param('tagId') tagId: string)
+
+// TODO: заменить все на @CurrentUser()
 
 @UseGuards(AuthGuard)
 @Controller('tag')
@@ -14,10 +18,8 @@ export class TagController {
   constructor(private readonly tagService: TagService) {}
 
   @Get()
-  async getUserTags(@Req() request: any, @Query() query: TagsQueryEntity) {
-    const user_id = request.decodedData.id;
-
-    return this.tagService.getAllTag(user_id, query);
+  async getUserTags(@CurrentUser() id: string, @Query() query: TagsQueryEntity) {
+    return this.tagService.getAllTag(id, query);
   }
 
   @Post()
@@ -30,23 +32,20 @@ export class TagController {
     return this.tagService.getTagById(tagId, request.decodedData.id);
   }
 
-  @Put(':id')
-  async updateTag(@Body() tagDto: Tag_FR_RQ, @Param() tag_id: { id: string }, @Req() request: any) {
-    const { id } = tag_id;
-
-    return this.tagService.updateTag(tagDto, id, request.decodedData.id);
+  @Put(':tagId')
+  async updateTag(@Body() tagDto: Tag_FR_RQ, @Param('tagId') tagId: string, @Req() request: any) {
+    return this.tagService.updateTag(tagDto, tagId, request.decodedData.id);
   }
 
-  @Delete(':id')
-  async deleteTag(@Param() tag_id: { id: string }, @Req() request: any) {
-    const { id } = tag_id;
-
-    return this.tagService.deleteTag(id, request.decodedData.id);
+  @Delete(':tagId')
+  async deleteTag(@Param('tagId') tagId: string, @Req() request: any) {
+    return this.tagService.deleteTag(tagId, request.decodedData.id);
   }
 
   /**
    * Связь тэга с задачей
    */
+  // TODO: PARAM
   @Post(':tagId/task/:taskId')
   async tagTaskRelation(@Param() { taskId, tagId }: TagTaskEntity, @Req() request: any) {
     return this.tagService.createRelationTagTask(tagId, taskId, request.decodedData.id);
