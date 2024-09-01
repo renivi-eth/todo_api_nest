@@ -2,9 +2,9 @@ import { Knex } from 'knex';
 import { hash } from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
-import { User_FR_RQ } from 'src/dto/user-fr-request';
-import { User_PG_RS } from 'src/dto/user-pg-response';
 import { UserEntity } from 'src/lib/types/user.entity';
+import { User_FR_RQ } from 'src/dto/dto-request/user-fr-request';
+import { User_PG_RS } from 'src/dto/dto-response/user-pg-response';
 
 import * as dotenv from 'dotenv';
 //Для использования .env файлов
