@@ -12,10 +12,10 @@ export const isStrongPassword = (validationOptions?: ValidationOptions) => {
           if (typeof value !== 'string') return false;
 
           if (value.length < 8) return false;
-          //TODO: добавить ру символы
-          if (!/[A-Z]/.test(value)) return false;
-          //TODO: добавить ру символы
-          if (!/[a-z]/.test(value)) return false;
+
+          if (!/[A-ZА-ЯЁ]/.test(value)) return false;
+
+          if (!/[a-zа-яё]/.test(value)) return false;
 
           // Проверка на наличие хотя бы одной цифры
           if (!/\d/.test(value)) return false;
