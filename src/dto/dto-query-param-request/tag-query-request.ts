@@ -1,7 +1,7 @@
 import { IsEnum, IsOptional } from 'class-validator';
 import { ToInt } from '../../lib/decorators/validate-to-int';
+import { SortProperty } from 'src/lib/variables/sort-property';
 import { SortDirection } from '../../lib/variables/sort-direction';
-import { SortTagProperty } from 'src/lib/variables/sort-tag-property';
 
 /**
  * DTO для QueryParam по тэгам - limit, sortProperty, sortDirection
@@ -14,8 +14,8 @@ export class TagsQueryDTO {
 
   /// Проверка на строку, какое поле нужно сортировать - name, created_at, по дефолту по name
   @IsOptional()
-  @IsEnum(SortTagProperty)
-  sortProperty = SortTagProperty.NAME;
+  @IsEnum(SortProperty)
+  sortProperty = SortProperty.NAME;
 
   // Проверка на ASC, DESC (по возрастанию /убыванию), направление сортировку - по возрастанию / убыванию
   @IsOptional()
