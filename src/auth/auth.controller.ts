@@ -2,7 +2,7 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User_FR_RQ } from '../dto/user-fr-request';
 import { ExceptionError } from 'src/lib/variables/exception-error';
-import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, HttpCode, Post, UseInterceptors } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +14,7 @@ export class AuthController {
   /**
    * Регистрация пользователя
    */
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('registration')
   async registration(@Body() createUserDto: User_FR_RQ) {
     const user = await this.userService.findUser(createUserDto.email);
