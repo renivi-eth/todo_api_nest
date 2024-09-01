@@ -2,9 +2,8 @@ import { TaskService } from './task.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Task_FR_RQ } from '../dto/task-fr-request';
 import { TaskQuery } from 'src/lib/types/task-query';
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-
-//TODO: разобраться с request: any (типизация any не подходит)
+import { CurrentUser } from 'src/lib/decorators/current-user';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 @UseGuards(AuthGuard)
 @Controller('task')
@@ -12,37 +11,27 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  async getUserTasks(@Req() request: any, @Query() query: TaskQuery) {
-    // Вытаскиваем user_id
-    const user_id = request.decodedData.id;
-
-    return this.taskService.getAllTask(user_id, query);
+  async getUserTasks(@CurrentUser() userId: string, @Query() query: TaskQuery) {
+    return this.taskService.getAllTask(userId, query);
   }
 
-  @Get(':id')
-  async getUserTaskById(@Param() task_id: { id: string }, @Req() request: any) {
-    // Деструктурируем id из param {id: string} и получаем id строкой
-    const { id } = task_id;
-
-    return this.taskService.getTaskById(id, request.decodedData.id);
+  @Get(':taskId')
+  async getUserTaskById(@Param('taskId') taskId: string, @CurrentUser() userId: string) {
+    return this.taskService.getTaskById(taskId, userId);
   }
 
   @Post()
-  async createTask(@Body() taskDto: Task_FR_RQ, @Req() request: any) {
-    return this.taskService.createTask(taskDto, request.decodedData.id);
+  async createTask(@Body() taskDto: Task_FR_RQ, @CurrentUser() userId: string) {
+    return this.taskService.createTask(taskDto, userId);
   }
 
-  @Put(':id')
-  async updateTask(@Body() taskDto: Task_FR_RQ, @Param() task_id: { id: string }, @Req() request: any) {
-    const { id } = task_id;
-
-    return this.taskService.updateTask(taskDto, id, request.decodedData.id);
+  @Put(':taskId')
+  async updateTask(@Body() taskDto: Task_FR_RQ, @Param('taskId') taskId: string, @CurrentUser() userId: string) {
+    return this.taskService.updateTask(taskDto, taskId, userId);
   }
 
-  @Delete(':id')
-  async deleteTask(@Param() task_id: { id: string }, @Req() request: any) {
-    const { id } = task_id;
-
-    return this.taskService.deleteTask(id, request.decodedData.id);
+  @Delete(':taskId')
+  async deleteTask(@Param('taskId') taskId: string, @CurrentUser() userId: string) {
+    return this.taskService.deleteTask(taskId, userId);
   }
 }
