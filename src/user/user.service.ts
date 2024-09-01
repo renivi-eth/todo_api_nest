@@ -23,7 +23,6 @@ export class UserService {
     const hashPassword = await hash(userBody.password, Number(process.env.PASSWORD_SALT));
 
     // При использовании вставки данных (insert()), отсутствует поддержка first(), поддерживается только в выборках данных;
-    // TODO: https://docs.nestjs.com/techniques/serialization
     const [newUser] = await this.knex<UserEntity>('user')
       .insert({ email: userBody.email, password: hashPassword })
       .returning<User_PG_RS[]>(['email', 'id', 'created_at', 'updated_at']);
