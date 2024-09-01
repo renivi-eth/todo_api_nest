@@ -1,10 +1,11 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
 
 export const isStrongPassword = (validationOptions?: ValidationOptions) => {
-  return function (object: Object, propertyName: string) {
+  // Возвращаем фабричную функцию, target - то к чему применяем User_FR_RQ, свойство password: string
+  return function (target: Object, propertyName: string) {
     registerDecorator({
       name: 'isStrongPassword',
-      target: object.constructor,
+      target: target.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
