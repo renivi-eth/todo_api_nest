@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
 import { TaskEntity } from '../lib/types/task.entity';
 import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
-import { Task_PG_RS } from 'src/dto/dto-response/task-pg-pesponse';
+import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
 
 @Injectable()
