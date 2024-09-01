@@ -1,16 +1,10 @@
 import { TagService } from './tag.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Tag_FR_RQ } from 'src/dto/tag-fr-request';
-import { TagTaskEntity } from 'src/lib/types/tag-task-entity';
-import { TagsQueryEntity } from 'src/lib/types/tag-query-entity';
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-
+import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
+import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 import { CurrentUser } from 'src/lib/decorators/current-user';
-
-// TODO: Написать декоратор @User вместо использования @Req
-//   Вытаскивать параметры, как в createTag (@Param('tagId') tagId: string)
-
-// TODO: заменить все на @CurrentUser()
+import { TagTaskEntity } from 'src/lib/types/tag-task-entity';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 @UseGuards(AuthGuard)
 @Controller('tag')
@@ -18,36 +12,35 @@ export class TagController {
   constructor(private readonly tagService: TagService) {}
 
   @Get()
-  async getUserTags(@CurrentUser() id: string, @Query() query: TagsQueryEntity) {
-    return this.tagService.getAllTag(id, query);
+  async getUserTags(@CurrentUser() userId: string, @Query() query: TagsQueryDTO) {
+    return this.tagService.getAllTag(userId, query);
   }
 
   @Post()
-  async createTag(@Body() tagDto: Tag_FR_RQ, @Req() request: any) {
-    return this.tagService.createTag(tagDto, request.decodedData.id);
+  async createTag(@Body() tagDto: Tag_FR_RQ, @CurrentUser() userId: string) {
+    return this.tagService.createTag(tagDto, userId);
   }
 
   @Get(':tagId')
-  async getUserTagById(@Param('tagId') tagId: string, @Req() request: any) {
-    return this.tagService.getTagById(tagId, request.decodedData.id);
+  async getUserTagById(@Param('tagId') tagId: string, @CurrentUser() userId: string) {
+    return this.tagService.getTagById(tagId, userId);
   }
 
   @Put(':tagId')
-  async updateTag(@Body() tagDto: Tag_FR_RQ, @Param('tagId') tagId: string, @Req() request: any) {
-    return this.tagService.updateTag(tagDto, tagId, request.decodedData.id);
+  async updateTag(@Body() tagDto: Tag_FR_RQ, @Param('tagId') tagId: string, @CurrentUser() userId: string) {
+    return this.tagService.updateTag(tagDto, tagId, userId);
   }
 
   @Delete(':tagId')
-  async deleteTag(@Param('tagId') tagId: string, @Req() request: any) {
-    return this.tagService.deleteTag(tagId, request.decodedData.id);
+  async deleteTag(@Param('tagId') tagId: string, @CurrentUser() userId: string) {
+    return this.tagService.deleteTag(tagId, userId);
   }
 
   /**
    * Связь тэга с задачей
    */
-  // TODO: PARAM
   @Post(':tagId/task/:taskId')
-  async tagTaskRelation(@Param() { taskId, tagId }: TagTaskEntity, @Req() request: any) {
-    return this.tagService.createRelationTagTask(tagId, taskId, request.decodedData.id);
+  async tagTaskRelation(@Param() { taskId, tagId }: TagTaskEntity, @CurrentUser() userId: string) {
+    return this.tagService.createRelationTagTask(tagId, taskId, userId);
   }
 }

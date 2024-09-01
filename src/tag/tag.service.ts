@@ -1,12 +1,12 @@
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
-import { Tag_FR_RQ } from 'src/dto/tag-fr-request';
-import { Tag_PG_RS } from 'src/dto/tag-pg-response';
+import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
+import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
 import { TagEntity } from 'src/lib/types/tag.entity';
-import { Task_PG_RS } from 'src/dto/task-pg-pesponse';
+import { Task_PG_RS } from 'src/dto/dto-response/task-pg-pesponse';
 import { TaskEntity } from 'src/lib/types/task.entity';
-import { Task_Tag_PG_RS } from 'src/dto/task-tag-pg-response';
-import { TagsQueryEntity } from 'src/lib/types/tag-query-entity';
+import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
+import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
@@ -20,7 +20,7 @@ export class TagService {
   /**
    * Метод Tag сервиса для получения всех тэгов из БД
    */
-  getAllTag = async (userId: string, query: TagsQueryEntity) => {
+  getAllTag = async (userId: string, query: TagsQueryDTO) => {
     const { limit, sortProperty, sortDirection } = query;
 
     const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id: userId });
