@@ -1,5 +1,5 @@
 /**
- * DTO для возвращаемых данных для :tagId/task/:taskId
+ * DTO для возвращаемых данных для связи задачи с тэгом
  */
 export type Task_Tag_PG_RS = {
   // taskId - UUID тип, ID задачи

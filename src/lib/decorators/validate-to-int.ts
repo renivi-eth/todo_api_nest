@@ -1,13 +1,7 @@
+import { BadRequestException } from '@nestjs/common';
 import { Transform, TransformFnParams } from 'class-transformer';
-
-// TODO:
-//  Заменить типы, там где используется этот трансформер
-
 /**
  * Трансформирует строку в number.
- *
- * Важно: необязательно получится валидное число,
- * для валидации нужно использовать class-validator.
  */
 export function TransformStringToNumber(): PropertyDecorator {
   return Transform((params: TransformFnParams) => {
@@ -19,10 +13,6 @@ export function TransformStringToNumber(): PropertyDecorator {
     if (Number.isFinite(+params.value)) {
       return +params.value;
     }
-
-    // TODO: Проверить что это работает
-    throw new Error(`${params.key} can't transform to number`)
-    // данную строку не получится трансформировать в number
-    // return value;
+    throw new BadRequestException(`${params.key} can't transform to number`);
   });
 }

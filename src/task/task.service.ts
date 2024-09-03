@@ -2,10 +2,10 @@ import { Knex } from 'knex';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
 import { TaskEntity } from '../lib/types/task.entity';
+import { SortDirection } from '../lib/variables/sort-direction';
 import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
 import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
-import { SortDirection } from '../lib/variables/sort-direction';
 
 @Injectable()
 export class TaskService {
@@ -23,7 +23,7 @@ export class TaskService {
     const queryBuilder = this.knex.table<TaskEntity>('task').where({ user_id: userId });
 
     if (limit) {
-      queryBuilder.limit(parseInt(limit));
+      queryBuilder.limit(limit);
     }
 
     if (state) {
@@ -65,9 +65,9 @@ export class TaskService {
   /**
    * Метод Task сервиса для обновления задачи в БД
    */
-  updateTask = async (taskDto: Task_FR_RQ, task_id: string, userId: string) => {
+  updateTask = async (taskDto: Task_FR_RQ, taskId: string, userId: string) => {
     const [task] = await this.knex<TaskEntity>('task')
-      .where({ id: task_id, user_id: userId })
+      .where({ id: taskId, user_id: userId })
       .update({
         name: taskDto.name,
         description: taskDto.description,
@@ -83,7 +83,7 @@ export class TaskService {
    * Метод Task сервиса для удаление задачи из БД по ID задачи
    */
   deleteTask = async (taskId: string, userId: string) => {
-    const [task] = await this.knex<TaskEntity>('task').where({ id: taskId, user_id: userId }).delete<Task_PG_RS[]>('*')
+    const [task] = await this.knex<TaskEntity>('task').where({ id: taskId, user_id: userId }).delete<Task_PG_RS[]>('*');
 
     return task;
   };

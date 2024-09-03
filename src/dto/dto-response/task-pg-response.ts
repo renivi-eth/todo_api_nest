@@ -1,26 +1,26 @@
 import { TaskState } from 'src/lib/variables/task-state';
 /**
- * DTO для возвращаемых данных от PostgreSQL для /task
+ * DTO для возвращаемых данных для задач
  */
 export type Task_PG_RS = {
   // ID задачи - UUID (универсальный уникальный идентификатор)
   id: string;
 
-  // name - текстовое название задачи
+  // Название задачи
   name: string;
 
-  // description - текстовое описание задачи
+  // Текстовое описание задачи
   description: string;
 
-  // state - состояния задачи, состоит из enum = backlog, in-progress, done
+  // Состояния задачи, состоит из enum = backlog, in-progress, done
   state: TaskState;
 
-  // user_id - ID пользователя, UUID
+  // ID пользователя для связи
   user_id: string;
 
-  // created_at - Date, дата создания задачи в формате
+  // Дата создания задачи
   created_at: Date;
 
-  // updated_at - Date; дата обновления полей задачи
+  // Дата обновления задачи
   updated_at: Date;
 };

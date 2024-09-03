@@ -31,10 +31,3 @@ Backend <-> PostgreSQL
 
 PG-RQ - PostgreSQL Request
 PG-RS - PostgreSQL Response
-
-## TODO:
-
-1.  Создать декоратор @CurrentUser
-1.  Реализовать сортировку и фильтрацию
-1.  Реализовать связь task_tag
-1.  Привести проект в порядок, включая ReadMe

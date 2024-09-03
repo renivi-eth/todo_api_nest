@@ -1,5 +1,6 @@
+import * as dotenv from 'dotenv';
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
-
+dotenv.config();
 /**
  * Кастомный декоратор, проверяет что пароль это строка
  * Должен иметь быть больше 8 символов, содержать хотя бы один заглавный и строчный символ
@@ -17,18 +18,16 @@ export const IsStrongPassword = (validationOptions?: ValidationOptions) => {
           if (typeof value !== 'string') {
             return false;
           }
-
-          if (value.length < 8) {
+          // EIGHT_NUMBER = 8
+          if (value.length < Number(process.env.EIGHT_NUMBER)) {
             return false;
           }
 
-          // TODO: проходить должны только английские символы
-
-          if (!/[A-ZА-ЯЁ]/.test(value)) {
+          if (!/[A-Z]/.test(value)) {
             return false;
           }
 
-          if (!/[a-zа-яё]/.test(value)) {
+          if (!/[A-Z]/.test(value)) {
             return false;
           }
 
