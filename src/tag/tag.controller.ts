@@ -1,9 +1,9 @@
 import { TagService } from './tag.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
-import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
-import { CurrentUserId } from 'src/lib/decorators/current-user-id';
+import { CurrentUser } from 'src/lib/decorators/current-user';
 import { TagTaskEntity } from 'src/lib/types/tag-task-entity';
+import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 @UseGuards(AuthGuard)
