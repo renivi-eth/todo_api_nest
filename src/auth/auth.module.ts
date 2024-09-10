@@ -17,6 +17,7 @@ import { AuthController } from './auth.controller';
     UserModule,
   ],
 
+  // TODO: зачем весь сервис?
   exports: [AuthService],
 
   providers: [AuthService, AuthGuard],

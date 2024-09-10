@@ -15,7 +15,6 @@ export class AuthController {
   /**
    * Регистрация пользователя
    */
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post('registration')
   async registration(@Body() createUserDto: User_FR_RQ) {
     const user = await this.userService.findUser(createUserDto.email);
