@@ -6,13 +6,11 @@ import { UserJwtPayload } from 'src/lib/types/user-jwt-payload';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-// Для использования .env файлов
 dotenv.config();
 
 @Injectable()
 export class AuthService {
   constructor(
-    // Инжектируем для работы с User (create, find)
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}

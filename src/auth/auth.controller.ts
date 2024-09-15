@@ -1,9 +1,9 @@
-import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
+import { AuthService } from './auth.service';
 import { User_FR_RQ } from '../dto/dto-request/user-fr-request';
-import { ExceptionError } from 'src/lib/variables/exception-error';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, HttpCode, Post, UseInterceptors } from '@nestjs/common';
+import { ExceptionError } from 'src/lib/variables/exception-error';
+import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
