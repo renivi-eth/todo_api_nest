@@ -1,8 +1,7 @@
-import { Knex } from 'knex';
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from 'nest-knexjs';
-import { TaskEntity } from '../lib/types/task.entity';
-import { SortDirection } from '../lib/variables/sort-direction';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from 'src/lib/entities/task.entity';
 import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
 import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
@@ -10,80 +9,95 @@ import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request
 @Injectable()
 export class TaskService {
   constructor(
-    @InjectConnection()
-    private readonly knex: Knex,
+    @InjectRepository(Task)
+    private taskRepository: Repository<Task>,
   ) {}
 
   /**
-   * Получение task по фильтрам
+   * Получение задач с фильтрами - state, name / created_at, limit
    */
   getAllTask = async (userId: string, query: TaskQueryDTO) => {
     const { limit, state, sortProperty, sortDirection } = query;
 
-    const queryBuilder = this.knex.table<TaskEntity>('task').where({ user_id: userId });
+    const queryBuilder = this.taskRepository.createQueryBuilder('task').where('task.user_id = :user_id', { user_id: userId });
+
+    if (state) {
+      queryBuilder.andWhere('task.state = :state', { state });
+    }
+
+    if (sortProperty) {
+      queryBuilder.orderBy(`task.${sortProperty}`, sortDirection ?? 'ASC');
+    }
 
     if (limit) {
       queryBuilder.limit(limit);
     }
 
-    if (state) {
-      queryBuilder.where({ state });
-    }
-
-    if (sortProperty) {
-      queryBuilder.orderBy(sortProperty, sortDirection ?? SortDirection.ASC);
-    }
-
-    return queryBuilder.select('*').returning<Task_PG_RS>('*');
+    return queryBuilder.getMany();
   };
 
   /**
-   * Получение task по task_id
+   * Получение задачи по id, user_id
    */
   getTaskById = async (id: string, userId: string) => {
-    const [task] = await this.knex<TaskEntity>('task').select('*').where({ id, user_id: userId }).returning<Task_PG_RS[]>('*');
+    const [task] = await this.taskRepository.query('SELECT * from task WHERE id = $1 AND user_id = $2', [id, userId]);
 
     return task;
   };
 
   /**
-   * Метод Task сервиса для создания задачи в БД
+   * Создание задачи
    */
   createTask = async (taskDto: Task_FR_RQ, userId: string) => {
-    const [task] = await this.knex<TaskEntity>('task')
-      .insert({
+    const query = await this.taskRepository
+      .createQueryBuilder()
+      .insert()
+      .into('task')
+      .values({
         user_id: userId,
         name: taskDto.name,
         state: taskDto.state,
         description: taskDto.description,
       })
-      .returning<Task_PG_RS[]>('*');
+      .returning('*')
+      .execute();
+
+    const [task]: Task_PG_RS[] = query.raw;
 
     return task;
   };
 
   /**
-   * Метод Task сервиса для обновления задачи в БД
+   * Обновление задачи
    */
   updateTask = async (taskDto: Task_FR_RQ, taskId: string, userId: string) => {
-    const [task] = await this.knex<TaskEntity>('task')
-      .where({ id: taskId, user_id: userId })
-      .update({
+    await this.taskRepository
+      .createQueryBuilder()
+      .update(Task)
+      .set({
         name: taskDto.name,
         description: taskDto.description,
         state: taskDto.state,
-        updated_at: this.knex.fn.now(),
+        updated_at: () => 'CURRENT_TIMESTAMP',
       })
-      .returning<Task_PG_RS[]>('*');
+      .where('task.id = :task_id', { task_id: taskId })
+      .andWhere('task.user_id = :user_id', { user_id: userId })
+      .execute();
 
-    return task;
+    const updatedTask = await this.taskRepository
+      .createQueryBuilder('task')
+      .where('task.id = :task_id', { task_id: taskId })
+      .andWhere('task.user_id = :user_id', { user_id: userId })
+      .getOne();
+
+    return updatedTask;
   };
 
   /**
-   * Метод Task сервиса для удаление задачи из БД по ID задачи
+   * Удаление задачи по id, task_id
    */
   deleteTask = async (taskId: string, userId: string) => {
-    const [task] = await this.knex<TaskEntity>('task').where({ id: taskId, user_id: userId }).delete<Task_PG_RS[]>('*');
+    const [[task]] = await this.taskRepository.query('DELETE FROM task WHERE id = $1 AND user_id = $2 RETURNING *', [taskId, userId]);
 
     return task;
   };
