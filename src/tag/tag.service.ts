@@ -1,36 +1,59 @@
 import { Knex } from 'knex';
+import { Repository } from 'typeorm';
 import { InjectConnection } from 'nest-knexjs';
+import { Tag } from 'src/lib/entities/tag.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { TagEntity } from 'src/lib/types/tag.entity';
 import { TaskEntity } from 'src/lib/types/task.entity';
 import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
 import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
 import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
 import { ExceptionError } from 'src/lib/variables/exception-error';
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
 import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class TagService {
   constructor(
     @InjectConnection()
     private readonly knex: Knex,
+
+    @InjectRepository(Tag)
+    private tagRepository: Repository<Tag>,
   ) {}
 
   /**
    * Метод Tag сервиса для получения всех тэгов из БД
    */
+
   getAllTag = async (userId: string, query: TagsQueryDTO) => {
     const { limit, sortProperty, sortDirection } = query;
 
-    const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id: userId });
+    const queryBuilder = this.tagRepository.createQueryBuilder('tag').where('tag.user_id = :user_id', { user_id: userId });
+
+    if (sortProperty) {
+      queryBuilder.orderBy(`tag.${sortProperty}`, sortDirection ?? 'ASC');
+    }
 
     if (limit) {
       queryBuilder.limit(limit);
     }
 
-    return queryBuilder.select('*').orderBy(sortProperty, sortDirection).returning<Tag_PG_RS>('*');
+    return queryBuilder.getMany();
   };
+
+  // getAllTag = async (userId: string, query: TagsQueryDTO) => {
+  //   const { limit, sortProperty, sortDirection } = query;
+
+  //   const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id: userId });
+
+  //   if (limit) {
+  //     queryBuilder.limit(limit);
+  //   }
+
+  //   return queryBuilder.select('*').orderBy(sortProperty, sortDirection).returning<Tag_PG_RS>('*');
+  // };
 
   getTagById = async (id: string, userId: string) => {
     const [tag] = await this.knex<TagEntity>('tag').select('*').where({ id: id, user_id: userId }).returning<Tag_PG_RS[]>('*');
@@ -98,7 +121,7 @@ export class TagService {
       .insert({ taskId, tagId })
       .returning<Task_Tag_PG_RS[]>('*')
       .catch((err) => {
-        if ((err.code = 123)) {
+        if (err.code == 123) {
           throw new UnauthorizedException(ExceptionError.RELATION_ALREADY_EXIST);
         }
 
