@@ -24,7 +24,7 @@ export class TagService {
   ) {}
 
   /**
-   * Метод Tag сервиса для получения всех тэгов из БД
+   * Получение тэгов с сортировкой, лимитом - name / created_at, limit
    */
 
   getAllTag = async (userId: string, query: TagsQueryDTO) => {
@@ -43,51 +43,57 @@ export class TagService {
     return queryBuilder.getMany();
   };
 
-  // getAllTag = async (userId: string, query: TagsQueryDTO) => {
-  //   const { limit, sortProperty, sortDirection } = query;
-
-  //   const queryBuilder = this.knex.table<TagEntity>('tag').select('*').where({ user_id: userId });
-
-  //   if (limit) {
-  //     queryBuilder.limit(limit);
-  //   }
-
-  //   return queryBuilder.select('*').orderBy(sortProperty, sortDirection).returning<Tag_PG_RS>('*');
-  // };
-
+  /**
+   * Получение тэга по id, user_id
+   */
   getTagById = async (id: string, userId: string) => {
-    const [tag] = await this.knex<TagEntity>('tag').select('*').where({ id: id, user_id: userId }).returning<Tag_PG_RS[]>('*');
+    const [tag] = await this.tagRepository.query('SELECT * FROM tag WHERE  id = $1 AND user_id = $2', [id, userId]);
 
     return tag;
   };
 
   /**
-   * Метод Tag сервиса для создания нового тэга в БД
+   * Создание тэга
    */
   createTag = async (tagDto: Tag_FR_RQ, userId: string) => {
-    const [tag] = await this.knex<TagEntity>('tag')
-      .insert({
+    const query = await this.tagRepository
+      .createQueryBuilder()
+      .insert()
+      .into('tag')
+      .values({
         name: tagDto.name,
         user_id: userId,
       })
-      .returning<Tag_PG_RS[]>('*');
+      .returning('*')
+      .execute();
+
+    const [tag]: Tag_PG_RS[] = query.raw;
 
     return tag;
   };
 
   /**
-   * Метод Tag сервиса для удаление всех тэгов из БД по ID тэга
+   * Обновление тэга
    */
   updateTag = async (tagDto: Tag_FR_RQ, tagId: string, userId: string) => {
-    const [tag] = await this.knex<TagEntity>('tag')
-      .where({ id: tagId, user_id: userId })
-      .update({
+    await this.tagRepository
+      .createQueryBuilder()
+      .update()
+      .set({
         name: tagDto.name,
-        updated_at: this.knex.fn.now(),
+        updated_at: () => 'CURRENT_TIMESTAMP',
       })
-      .returning<Tag_PG_RS[]>('*');
+      .where('tag.id = :tag_id', { tag_id: tagId })
+      .andWhere('tag.user_id = :user_id', { user_id: userId })
+      .execute();
 
-    return tag;
+    const updatedTag = await this.tagRepository
+      .createQueryBuilder('tag')
+      .where('tag.id = :tag_id', { tag_id: tagId })
+      .andWhere('tag.user_id = :user_id', { user_id: userId })
+      .getOne();
+
+    return updatedTag;
   };
 
   /**
