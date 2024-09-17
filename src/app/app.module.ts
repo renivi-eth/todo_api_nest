@@ -7,6 +7,9 @@ import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/lib/entities/user.entity';
+import { Task } from 'src/lib/entities/task.entity';
+import { Tag } from 'src/lib/entities/tag.entity';
+import { TaskTag } from 'src/lib/entities/tag.task.enitity';
 
 dotenv.config();
 
@@ -20,7 +23,8 @@ dotenv.config();
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User],
+      // TODO: изменить на валидный путь к папке
+      entities: [User, Task, Tag, TaskTag],
       synchronize: false,
     }),
 
