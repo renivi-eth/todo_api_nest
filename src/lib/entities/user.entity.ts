@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Task } from './task.entity';
+import { Tag } from './tag.entity';
 
 @Entity('user')
 export class User {
@@ -16,8 +18,7 @@ export class User {
   @Column({
     type: 'text',
     nullable: false,
-  }
-  )
+  })
   password: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -25,4 +26,12 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updated_at: Date;
+
+  // Один пользователь может иметь много задач
+  @OneToMany(() => Task, (task) => task.user_id)
+  tasks: Task[];
+
+  // Один пользователь можем иметь много тэгов
+  @OneToMany(() => Tag, (tag) => tag.user_id)
+  tags: Tag[];
 }
