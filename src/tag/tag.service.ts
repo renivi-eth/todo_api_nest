@@ -1,24 +1,19 @@
-import { Knex } from 'knex';
-import { Repository } from 'typeorm';
-import { InjectConnection } from 'nest-knexjs';
-import { Tag } from 'src/lib/entities/tag.entity';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagEntity } from 'src/lib/types/tag.entity';
-import { TaskEntity } from 'src/lib/types/task.entity';
+import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
 import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
-import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
-import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
-import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Tag } from 'src/lib/entities/tag.entity';
+import { ExceptionError } from 'src/lib/variables/exception-error';
+import { QueryFailedError, Repository } from 'typeorm';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Injectable()
 export class TagService {
   constructor(
-    @InjectConnection()
-    private readonly knex: Knex,
-
     @InjectRepository(Tag)
     private tagRepository: Repository<Tag>,
   ) {}
@@ -26,7 +21,6 @@ export class TagService {
   /**
    * Получение тэгов с сортировкой, лимитом - name / created_at, limit
    */
-
   getAllTag = async (userId: string, query: TagsQueryDTO) => {
     const { limit, sortProperty, sortDirection } = query;
 
@@ -100,18 +94,18 @@ export class TagService {
    * Метод Tag сервиса для удаление всех тэгов из БД по ID тэга
    */
   deleteTag = async (tagId: string, userId: string) => {
-    const [deleteTag] = await this.knex<TagEntity>('tag').where({ id: tagId, user_id: userId }).del().returning<Tag_PG_RS[]>('*');
+    const [[tag]] = await this.tagRepository.query('DELETE FROM tag WHERE id = $1 AND user_id = $2 RETURNING *', [tagId, userId]);
 
-    return deleteTag;
+    return tag;
   };
 
   /**
-   * Метод Tag для создания связи между тэгом и задачей
+   * Создания связи между задачей и тэгом
    */
   createRelationTagTask = async (tagId: string, taskId: string, userId: string) => {
     const [task, tag] = await Promise.all([
-      this.knex<TaskEntity>('task').select('id').where({ id: taskId, user_id: userId }).returning<Task_PG_RS>('id'),
-      this.knex<TagEntity>('tag').select('id').where({ id: tagId, user_id: userId }).returning<Tag_PG_RS>('id'),
+      this.tagRepository.query('SELECT id FROM task WHERE id = $1 AND user_id = $2', [taskId, userId]),
+      this.tagRepository.query('SELECT id FROM tag WHERE id = $1 AND user_id = $2', [tagId, userId]),
     ]);
 
     if (!task) {
@@ -122,17 +116,27 @@ export class TagService {
       throw new UnauthorizedException(ExceptionError.TAG_NOT_FOUND);
     }
 
-    // Если задача / тэг принадлежат пользователю И (!) такой связи еще нет, создаем связь
-    const [relations] = await this.knex('task_tag')
-      .insert({ taskId, tagId })
-      .returning<Task_Tag_PG_RS[]>('*')
+    const query = await this.tagRepository
+      .createQueryBuilder()
+      .insert()
+      .into('task_tag')
+      .values({
+        task_id: taskId,
+        tag_id: tagId,
+      })
+      .returning('*')
+      .execute()
       .catch((err) => {
-        if (err.code == 123) {
-          throw new UnauthorizedException(ExceptionError.RELATION_ALREADY_EXIST);
+        if (err instanceof QueryFailedError) {
+          if (err.driverError?.code === process.env.DUPLICATE_KEY_PG) {
+            throw new ConflictException(ExceptionError.RELATION_ALREADY_EXIST);
+          }
+          throw new InternalServerErrorException(ExceptionError.DATABASE_ERROR);
         }
-
-        throw new InternalServerErrorException('Database error');
+        throw new InternalServerErrorException(ExceptionError.UNEXPECTED_ERROR);
       });
+
+    const [relations]: Task_Tag_PG_RS[] = query.raw;
 
     return relations;
   };

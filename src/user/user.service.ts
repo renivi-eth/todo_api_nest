@@ -12,7 +12,6 @@ dotenv.config();
 @Injectable()
 export class UserService {
   constructor(
-    // TypeORM с Repository
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
@@ -43,12 +42,10 @@ export class UserService {
   findUser = async (email: string): Promise<User | null> => {
     const user = this.userRepository
       .createQueryBuilder('user')
-      .select(['user.id', 'user.email', 'user.created_at'])
+      .select(['user.id', 'user.email', 'user.created_at', 'user.password'])
       .where('user.email = :email', { email: email })
       .getOne();
 
     return user;
-
-    // createQueryBuilder("user").where("user.name = :name", { name: "Timber" })
   };
 }

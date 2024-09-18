@@ -40,7 +40,7 @@ export class TaskService {
    * Получение задачи по id, user_id
    */
   getTaskById = async (id: string, userId: string) => {
-    const [task] = await this.taskRepository.query('SELECT * from task WHERE id = $1 AND user_id = $2', [id, userId]);
+    const [task] = await this.taskRepository.query('SELECT * FROM task WHERE id = $1 AND user_id = $2', [id, userId]);
 
     return task;
   };
