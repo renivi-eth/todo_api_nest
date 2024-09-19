@@ -1,15 +1,12 @@
+import { join } from 'path';
 import * as dotenv from 'dotenv';
 import { Module } from '@nestjs/common';
 import { TagModule } from '../tag/tag.module';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskModule } from '../task/task.module';
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/lib/entities/user.entity';
-import { Task } from 'src/lib/entities/task.entity';
-import { Tag } from 'src/lib/entities/tag.entity';
-import { TaskTag } from 'src/lib/entities/tag.task.enitity';
 
 dotenv.config();
 
@@ -23,8 +20,7 @@ dotenv.config();
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      // TODO: изменить на валидный путь к папке
-      entities: [User, Task, Tag, TaskTag],
+      entities: [join(__dirname, '/../lib/entities/*.entity{.ts,.js}')],
       synchronize: false,
     }),
 
@@ -49,3 +45,5 @@ dotenv.config();
   controllers: [],
 })
 export class AppModule {}
+
+// User, Task, Tag, TaskTag
