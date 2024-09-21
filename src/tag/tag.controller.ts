@@ -1,8 +1,8 @@
 import { TagService } from './tag.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { TagTaskEntity } from 'src/lib/types/tag-task-entity';
 import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
 import { CurrentUserId } from 'src/lib/decorators/current-user-id';
+import { TagTask_FR_RQ } from 'src/dto/dto-request/tag-task-fr-request';
 import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
@@ -40,7 +40,7 @@ export class TagController {
    * Связь тэга с задачей
    */
   @Post(':tagId/task/:taskId')
-  async tagTaskRelation(@Param() { taskId, tagId }: TagTaskEntity, @CurrentUserId() userId: string) {
+  async tagTaskRelation(@Param() { taskId, tagId }: TagTask_FR_RQ, @CurrentUserId() userId: string) {
     return this.tagService.createRelationTagTask(tagId, taskId, userId);
   }
 }
