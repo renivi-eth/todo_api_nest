@@ -28,4 +28,10 @@ export enum ExceptionError {
 
   // Неизвестная ошибка
   UNEXPECTED_ERROR = 'Unexpected error',
+
+  // Успешная инициализация DataSource (для миграций)
+  DATA_SOURCE_SUCCESS = 'Data Source is initialized successful!',
+
+  // Ошибка при инициализации DataSource (для миграция)
+  DATA_SOURCE_ERROR = 'Error with Data Source',
 }
