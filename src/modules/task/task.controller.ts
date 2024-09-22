@@ -1,8 +1,8 @@
 import { TaskService } from './task.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { CurrentUserId } from 'src/lib/decorators/current-user-id';
-import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
-import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
+import { Task_FR_RQ } from '../../lib/dto/dto-request/task-fr-request';
+import { TaskQueryDTO } from 'src/lib/dto/dto-query-param-request/task-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 @UseGuards(AuthGuard)

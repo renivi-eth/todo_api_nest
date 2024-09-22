@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Task } from 'src/lib/entities/task.entity';
-import { Task_FR_RQ } from '../dto/dto-request/task-fr-request';
-import { Task_PG_RS } from 'src/dto/dto-response/task-pg-response';
-import { TaskQueryDTO } from 'src/dto/dto-query-param-request/task-query-request';
+import { Task } from 'src/database/entities/task.entity';
+import { Task_FR_RQ } from '../../lib/dto/dto-request/task-fr-request';
+import { Task_PG_RS } from 'src/lib/dto/dto-response/task-pg-response';
+import { TaskQueryDTO } from 'src/lib/dto/dto-query-param-request/task-query-request';
 
 @Injectable()
 export class TaskService {

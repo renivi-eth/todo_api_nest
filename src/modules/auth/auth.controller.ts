@@ -1,6 +1,6 @@
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 import { AuthService } from './auth.service';
-import { User_FR_RQ } from '../dto/dto-request/user-fr-request';
+import { User_FR_RQ } from '../../lib/dto/dto-request/user-fr-request';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';

@@ -1,11 +1,11 @@
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import { Module } from '@nestjs/common';
-import { TagModule } from '../tag/tag.module';
+import { TagModule } from './tag/tag.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TaskModule } from '../task/task.module';
-import { AuthModule } from '../auth/auth.module';
+import { TaskModule } from './task/task.module';
+import { AuthModule } from './auth/auth.module';
 
 dotenv.config();
 

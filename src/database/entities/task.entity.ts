@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TaskState } from '../variables/task-state';
+import { TaskState } from '../../lib/variables/task-state';
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
 

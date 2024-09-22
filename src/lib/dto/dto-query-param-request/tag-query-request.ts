@@ -1,7 +1,7 @@
 import { SortProperty } from 'src/lib/variables/sort-property';
-import { SortDirection } from '../../lib/variables/sort-direction';
+import { SortDirection } from '../../variables/sort-direction';
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
-import { TransformStringToNumber } from '../../lib/decorators/validate-to-int';
+import { TransformStringToNumber } from '../../decorators/validate-to-int';
 
 /**
  * DTO для QueryParam по тэгам - limit, sortProperty, sortDirection

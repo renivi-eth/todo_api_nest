@@ -1,12 +1,12 @@
 import * as dotenv from 'dotenv';
-import { Tag } from 'src/lib/entities/tag.entity';
+import { Tag } from 'src/database/entities/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
-import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
-import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
+import { Tag_FR_RQ } from 'src/lib/dto/dto-request/tag-fr-request';
+import { Tag_PG_RS } from 'src/lib/dto/dto-response/tag-pg-response';
 import { ExceptionError } from 'src/lib/variables/exception-error';
-import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
-import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
+import { Task_Tag_PG_RS } from 'src/lib/dto/dto-response/task-tag-pg-response';
+import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
 import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 
 dotenv.config();
@@ -22,6 +22,8 @@ export class TagService {
    * Получение тэгов с сортировкой, лимитом - name / created_at, limit
    */
   getAllTag = async (userId: string, query: TagsQueryDTO) => {
+    console.timeEnd('getAllTag : 1111');
+
     const { limit, sortProperty, sortDirection } = query;
 
     const queryBuilder = this.tagRepository.createQueryBuilder('tag').where('tag.user_id = :user_id', { user_id: userId });
@@ -34,7 +36,13 @@ export class TagService {
       queryBuilder.limit(limit);
     }
 
-    return queryBuilder.getMany();
+    console.timeEnd('getAllTag : 1111');
+
+    console.time('2222');
+    const result = await queryBuilder.getMany();
+
+    console.timeEnd('2222');
+  return result;
   };
 
   /**
@@ -91,10 +99,16 @@ export class TagService {
   };
 
   /**
-   * Метод Tag сервиса для удаление всех тэгов из БД по ID тэга
+   * Метод Tag сервиса для удаления всех тэгов из БД по ID тэга
    */
   deleteTag = async (tagId: string, userId: string): Promise<Tag_PG_RS> => {
-    const [[tag]] = await this.tagRepository.query('DELETE FROM tag WHERE id = $1 AND user_id = $2 RETURNING *', [tagId, userId]);
+    const [[tag]] = await this.tagRepository.query('DELETE FROM tag WHERE id = $1 AND user_id = $2 RETURNING *', [tagId, userId]).catch((err) => {
+      if (err instanceof QueryFailedError) {
+        throw new InternalServerErrorException(ExceptionError.DATABASE_ERROR);
+      }
+
+      throw new InternalServerErrorException(ExceptionError.UNEXPECTED_ERROR);
+    });
 
     return tag;
   };

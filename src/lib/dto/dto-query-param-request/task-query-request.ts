@@ -1,8 +1,8 @@
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
-import { TaskState } from '../../lib/variables/task-state';
-import { SortProperty } from '../../lib/variables/sort-property';
-import { SortDirection } from '../../lib/variables/sort-direction';
-import { TransformStringToNumber } from '../../lib/decorators/validate-to-int';
+import { TaskState } from '../../variables/task-state';
+import { SortProperty } from '../../variables/sort-property';
+import { SortDirection } from '../../variables/sort-direction';
+import { TransformStringToNumber } from '../../decorators/validate-to-int';
 
 /**
  * DTO для QueryParam по задачам - limit, sortProperty, sortDirection

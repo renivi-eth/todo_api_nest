@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 import { UserJwtPayload } from 'src/lib/types/user-jwt-payload';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { Injectable, UnauthorizedException } from '@nestjs/common';

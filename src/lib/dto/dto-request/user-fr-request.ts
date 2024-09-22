@@ -1,5 +1,5 @@
 import { IsEmail } from 'class-validator';
-import { IsStrongPassword } from '../../lib/decorators/validate-password';
+import { IsStrongPassword } from '../../decorators/validate-password';
 /**
  * DTO для входных данных для создания и поиска пользователя
  */
