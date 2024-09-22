@@ -1,13 +1,13 @@
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { Tag } from 'src/lib/entities/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
+import { QueryFailedError, Repository } from 'typeorm';
 import { Tag_FR_RQ } from 'src/dto/dto-request/tag-fr-request';
 import { Tag_PG_RS } from 'src/dto/dto-response/tag-pg-response';
-import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
-import { Tag } from 'src/lib/entities/tag.entity';
 import { ExceptionError } from 'src/lib/variables/exception-error';
-import { QueryFailedError, Repository } from 'typeorm';
-import * as dotenv from 'dotenv';
+import { Task_Tag_PG_RS } from 'src/dto/dto-response/task-tag-pg-response';
+import { TagsQueryDTO } from 'src/dto/dto-query-param-request/tag-query-request';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 
 dotenv.config();
 
@@ -40,7 +40,7 @@ export class TagService {
   /**
    * Получение тэга по id, user_id
    */
-  getTagById = async (id: string, userId: string) => {
+  getTagById = async (id: string, userId: string): Promise<Tag_PG_RS> => {
     const [tag] = await this.tagRepository.query('SELECT * FROM tag WHERE  id = $1 AND user_id = $2', [id, userId]);
 
     return tag;
@@ -93,7 +93,7 @@ export class TagService {
   /**
    * Метод Tag сервиса для удаление всех тэгов из БД по ID тэга
    */
-  deleteTag = async (tagId: string, userId: string) => {
+  deleteTag = async (tagId: string, userId: string): Promise<Tag_PG_RS> => {
     const [[tag]] = await this.tagRepository.query('DELETE FROM tag WHERE id = $1 AND user_id = $2 RETURNING *', [tagId, userId]);
 
     return tag;
