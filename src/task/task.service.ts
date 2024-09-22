@@ -39,7 +39,7 @@ export class TaskService {
   /**
    * Получение задачи по id, user_id
    */
-  getTaskById = async (id: string, userId: string) => {
+  getTaskById = async (id: string, userId: string): Promise<Task_PG_RS> => {
     const [task] = await this.taskRepository.query('SELECT * FROM task WHERE id = $1 AND user_id = $2', [id, userId]);
 
     return task;
@@ -96,7 +96,7 @@ export class TaskService {
   /**
    * Удаление задачи по id, task_id
    */
-  deleteTask = async (taskId: string, userId: string) => {
+  deleteTask = async (taskId: string, userId: string): Promise<Task_PG_RS> => {
     const [[task]] = await this.taskRepository.query('DELETE FROM task WHERE id = $1 AND user_id = $2 RETURNING *', [taskId, userId]);
 
     return task;
