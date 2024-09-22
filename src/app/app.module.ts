@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskModule } from '../task/task.module';
 import { AuthModule } from '../auth/auth.module';
-import { DatabaseModule } from '../database/database.module';
 
 dotenv.config();
 
@@ -29,8 +28,6 @@ dotenv.config();
       envFilePath: '.env',
     }),
 
-    DatabaseModule,
-
     AuthModule,
 
     TaskModule,
@@ -45,5 +42,3 @@ dotenv.config();
   controllers: [],
 })
 export class AppModule {}
-
-// User, Task, Tag, TaskTag
