@@ -3,9 +3,9 @@ import * as dotenv from 'dotenv';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/lib/entities/user.entity';
-import { User_FR_RQ } from 'src/dto/dto-request/user-fr-request';
-import { User_PG_RS } from 'src/dto/dto-response/user-pg-response';
+import { User } from 'src/database/entities/user.entity';
+import { User_FR_RQ } from 'src/lib/dto/dto-request/user-fr-request';
+import { User_PG_RS } from 'src/lib/dto/dto-response/user-pg-response';
 
 dotenv.config();
 
