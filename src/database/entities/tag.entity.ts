@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { TaskState } from '../../lib/variables/task-state';
 import { User } from './user.entity';
 
 @Entity('tag')

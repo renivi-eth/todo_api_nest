@@ -1,17 +1,6 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { TaskState } from '../../lib/variables/task-state';
 import { User } from './user.entity';
-import { Tag } from './tag.entity';
+import { TaskState } from '../../lib/variables/task-state';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('task')
 export class Task {
