@@ -1,6 +1,4 @@
 import { isValidNumber } from './is-valid-number';
-
-
 /**
  * @description
  *
@@ -20,9 +18,7 @@ export const calcPartPercentOfWhole = (part: number, whole: number, digits = 0) 
   }
 
   if (!isValidNumber(part) || !isValidNumber(whole) || !isValidNumber(digits)) {
-    throw new Error(
-      `calcPartPercentOfWhole get invalid parameters: part: ${part}, whole: ${whole}, digits: ${digits}`,
-    );
+    throw new Error(`calcPartPercentOfWhole get invalid parameters: part: ${part}, whole: ${whole}, digits: ${digits}`);
   }
 
   const result = (part / whole) * 100;
