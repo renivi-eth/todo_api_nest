@@ -22,8 +22,6 @@ export class TagService {
    * Получение тэгов с сортировкой, лимитом - name / created_at, limit
    */
   getAllTag = async (userId: string, query: TagsQueryDTO) => {
-    console.timeEnd('getAllTag : 1111');
-
     const { limit, sortProperty, sortDirection } = query;
 
     const queryBuilder = this.tagRepository.createQueryBuilder('tag').where('tag.user_id = :user_id', { user_id: userId });
@@ -36,13 +34,9 @@ export class TagService {
       queryBuilder.limit(limit);
     }
 
-    console.timeEnd('getAllTag : 1111');
-
-    console.time('2222');
     const result = await queryBuilder.getMany();
 
-    console.timeEnd('2222');
-  return result;
+    return result;
   };
 
   /**
@@ -102,13 +96,15 @@ export class TagService {
    * Метод Tag сервиса для удаления всех тэгов из БД по ID тэга
    */
   deleteTag = async (tagId: string, userId: string): Promise<Tag_PG_RS> => {
-    const [[tag]] = await this.tagRepository.query('DELETE FROM tag WHERE id = $1 AND user_id = $2 RETURNING *', [tagId, userId]).catch((err) => {
-      if (err instanceof QueryFailedError) {
-        throw new InternalServerErrorException(ExceptionError.DATABASE_ERROR);
-      }
+    const [[tag]] = await this.tagRepository
+      .query('DELETE FROM tag WHERE id = $1 AND user_id = $2 RETURNING *', [tagId, userId])
+      .catch((err) => {
+        if (err instanceof QueryFailedError) {
+          throw new InternalServerErrorException(ExceptionError.DATABASE_ERROR);
+        }
 
-      throw new InternalServerErrorException(ExceptionError.UNEXPECTED_ERROR);
-    });
+        throw new InternalServerErrorException(ExceptionError.UNEXPECTED_ERROR);
+      });
 
     return tag;
   };
