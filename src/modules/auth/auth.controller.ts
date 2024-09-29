@@ -5,6 +5,12 @@ import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { ExceptionError } from 'src/lib/variables/exception-error';
 import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
 
+import { User_PG_RS } from '../../lib/dto/dto-response/user-pg-response';
+
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+@ApiTags('User')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -15,7 +21,10 @@ export class AuthController {
   /**
    * Регистрация пользователя
    */
+
   @Post('registration')
+  @ApiResponse({ status: 201, description: 'User was create successfull.' })
+  @ApiResponse({ status: 400, description: 'User with this Email already registered' })
   async registration(@Body() createUserDto: User_FR_RQ) {
     const user = await this.userService.findUser(createUserDto.email);
 

@@ -6,6 +6,9 @@ import { TagTask_FR_RQ } from 'src/lib/dto/dto-request/tag-task-fr-request';
 import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Tag')
 @UseGuards(AuthGuard)
 @Controller('tag')
 export class TagController {

@@ -5,6 +5,9 @@ import { Task_FR_RQ } from '../../lib/dto/dto-request/task-fr-request';
 import { TaskQueryDTO } from 'src/lib/dto/dto-query-param-request/task-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Task')
 @UseGuards(AuthGuard)
 @Controller('task')
 export class TaskController {
