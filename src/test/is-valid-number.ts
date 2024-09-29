@@ -1,5 +1,4 @@
 import { isValidNumber } from '../lib/utils/is-valid-number';
-
 // Описание для какой
 describe('Unit test isValidNumber function', () => {
   // test() тоже самое что и it()
@@ -49,9 +48,13 @@ describe('Unit test isValidNumber function', () => {
 
   test('Результат должен возвращать false для других типов данных', () => {
     expect(isValidNumber({})).toBe(false);
+
     expect(isValidNumber([])).toBe(false);
+
     expect(isValidNumber(null)).toBe(false);
+
     expect(isValidNumber(undefined)).toBe(false);
+
     expect(isValidNumber(true)).toBe(false);
   });
 });

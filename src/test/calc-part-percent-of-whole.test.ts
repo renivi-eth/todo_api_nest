@@ -1,5 +1,4 @@
 import { calcPartPercentOfWhole } from '../lib/utils/calc-part-percent-of-whole';
-
 describe('Unit test for calcPartPercentOfWhole functions', () => {
   //
   test('Результат должден возвращать правильное процентное соотношение', () => {
@@ -14,18 +13,14 @@ describe('Unit test for calcPartPercentOfWhole functions', () => {
   test('Результат должен возвращать 0 если один из аргументов равен 0', () => {
     // Если один из аргумента функции равен 0
     expect(calcPartPercentOfWhole(0, 100)).toBe(0);
+
     expect(calcPartPercentOfWhole(10, 0)).toBe(0);
   });
 
   test('Результат должен возвращать корректное число при указании округления (digits)', () => {
     // Корректная работа округления знаков после запятой
     expect(calcPartPercentOfWhole(10, 3, 2)).toBe(333.33);
+
     expect(calcPartPercentOfWhole(555, 1000, 1)).toBe(55.5);
   });
-
-  // TODO: А если убыток? Смотря в каком контексте используется функция;
-  // test('Результат должен быть выбрасывать ошибку для отрицательных значений', () => {
-  //   expect(() => calcPartPercentOfWhole(-10, 100)).toThrow();
-  //   expect(() => calcPartPercentOfWhole(10, -100)).toThrow();
-  // });
 });
