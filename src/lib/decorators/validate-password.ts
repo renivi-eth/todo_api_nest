@@ -35,7 +35,7 @@ export const IsStrongPassword = (validationOptions?: ValidationOptions) => {
           return /\d/.test(value);
         },
         defaultMessage(args: ValidationArguments) {
-          return 'Password must have a minimum of 8 characters, including Upper and Lower case letters and Numbers';
+          return 'password must have a minimum of 8 characters, including Upper and Lower case letters and Numbers';
         },
       },
     });
