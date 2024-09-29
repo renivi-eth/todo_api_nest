@@ -9,7 +9,7 @@ export enum ExceptionError {
   BAD_PASSWORD = 'Password is wrong',
 
   // Ошибка, если такой пользователь с Email уже существует в БД
-  ALREADY_REGISTERED_ERROR = 'User with Email already registered',
+  ALREADY_REGISTERED_ERROR = 'User with this Email already registered',
 
   // Ошибка, если задача не найдена в БД (TagService)
   TASK_NOT_FOUND = 'Task not found',

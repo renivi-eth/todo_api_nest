@@ -1,5 +1,3 @@
-import { Exclude } from 'class-transformer';
-
 /**
  * DTO для возвращаемых данных для createUser() / findUser()
  */
