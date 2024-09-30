@@ -17,7 +17,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  // Swagger
+  // Конфиг Swagger
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Todo API with NestJS')
     .setDescription('API developed throughout the API with NestJS course')
@@ -27,7 +27,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    // JSON format: http://localhost:3000/swagger/json
+    jsonDocumentUrl: 'swagger/json',
+  });
 
   await app.listen(port);
 
