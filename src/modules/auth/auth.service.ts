@@ -45,7 +45,7 @@ export class AuthService {
   };
 
   /**
-   * Метод валидация токена, проверка прав доступа / авторизация (arrow function)
+   * Метод валидация токена, проверка прав доступа / авторизация (arrow function), используется в Auth.guard
    */
   validateToken = async (accessToken: string) => {
     return this.jwtService.verifyAsync<UserJwtPayload>(accessToken);
