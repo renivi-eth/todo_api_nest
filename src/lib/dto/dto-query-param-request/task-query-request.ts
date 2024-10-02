@@ -24,7 +24,7 @@ export class TaskQueryDTO {
   @IsEnum(TaskState)
   state?: TaskState;
 
-  @ApiProperty({ description: 'Sort Property', enum: ['CREATED_AT', 'NAME'], required: false })
+  @ApiProperty({ description: 'Sort Property', enum: ['created_at', 'name'], required: false })
   // Проверка на строку, какое поле нужно сортировать - name, created_at, по дефолту по name
   @IsEnum(SortProperty)
   sortProperty = SortProperty.CREATED_AT;
