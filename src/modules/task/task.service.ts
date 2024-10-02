@@ -5,6 +5,8 @@ import { Task } from 'src/database/entities/task.entity';
 import { Task_FR_RQ } from '../../lib/dto/dto-request/task-fr-request';
 import { Task_PG_RS } from 'src/lib/dto/dto-response/task-pg-response';
 import { TaskQueryDTO } from 'src/lib/dto/dto-query-param-request/task-query-request';
+import { TagTask_FR_RQ } from 'src/lib/dto/dto-request/tag-task-fr-request';
+import { TaskIdParam } from 'src/lib/dto/dto-request/task-id-request';
 
 @Injectable()
 export class TaskService {
@@ -39,7 +41,7 @@ export class TaskService {
   /**
    * Получение задачи по id, user_id
    */
-  getTaskById = async (id: string, userId: string): Promise<Task_PG_RS> => {
+  getTaskById = async (id: TaskIdParam, userId: string): Promise<Task_PG_RS> => {
     const [task] = await this.taskRepository.query('SELECT * FROM task WHERE id = $1 AND user_id = $2', [id, userId]);
 
     return task;
@@ -96,7 +98,7 @@ export class TaskService {
   /**
    * Удаление задачи по id, task_id
    */
-  deleteTask = async (taskId: string, userId: string): Promise<Task_PG_RS> => {
+  deleteTask = async (taskId: TaskIdParam, userId: string): Promise<Task_PG_RS> => {
     const [[task]] = await this.taskRepository.query('DELETE FROM task WHERE id = $1 AND user_id = $2 RETURNING *', [taskId, userId]);
 
     return task;
