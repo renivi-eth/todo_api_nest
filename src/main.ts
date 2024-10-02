@@ -28,6 +28,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document, {
+    // Swagger UI - http://localhost:3000/api
     // JSON format: http://localhost:3000/swagger/json
     jsonDocumentUrl: 'swagger/json',
   });
