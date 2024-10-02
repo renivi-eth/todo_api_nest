@@ -6,14 +6,24 @@ import { TagTask_FR_RQ } from 'src/lib/dto/dto-request/tag-task-fr-request';
 import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadResponse } from 'src/lib/swagger/invalid-response-swagger';
+
+import { Tag_PG_RS } from 'src/lib/dto/dto-response/tag-pg-response';
 
 @ApiTags('Tag')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('tag')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
+  @ApiOperation({
+    summary: 'Get all user tasks with Query params',
+    description: 'Get all user task with Query Param - limit, state, sort property, sort direction',
+  })
+  @ApiResponse({ status: 200, type: Tag_PG_RS })
+  @BadResponse()
   @Get()
   async getUserTags(@CurrentUserId() userId: string, @Query() query: TagsQueryDTO) {
     return this.tagService.getAllTag(userId, query);
