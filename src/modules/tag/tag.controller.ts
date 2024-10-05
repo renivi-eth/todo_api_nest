@@ -6,7 +6,7 @@ import { TagTask_FR_RQ } from 'src/lib/dto/dto-request/tag-task-fr-request';
 import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadResponse } from 'src/lib/swagger/invalid-response-swagger';
 
 import { Tag_PG_RS } from 'src/lib/dto/dto-response/tag-pg-response';
@@ -29,6 +29,13 @@ export class TagController {
     return this.tagService.getAllTag(userId, query);
   }
 
+  @ApiOperation({
+    summary: 'Create a new tag',
+    description: 'Create a new tag with name',
+  })
+  @ApiCreatedResponse({ status: 200, type: Tag_PG_RS })
+  @ApiBody({ type: Tag_FR_RQ, description: 'Tag create body' })
+  @BadResponse()
   @Post()
   async createTag(@Body() tagDto: Tag_FR_RQ, @CurrentUserId() userId: string) {
     return this.tagService.createTag(tagDto, userId);
