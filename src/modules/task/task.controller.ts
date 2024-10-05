@@ -29,7 +29,7 @@ export class TaskController {
 
   @ApiOperation({
     summary: 'Get task by id (UUID)',
-    description: 'Gett task by id (UUID)',
+    description: 'Get task by id (UUID)',
   })
   @ApiResponse({ status: 200, type: Task_PG_RS })
   @BadResponse()
