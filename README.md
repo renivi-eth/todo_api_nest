@@ -1,6 +1,8 @@
 # NestJS REST API TODO app (PostgreSQL,TypeORM)
 
-<img src="https://nestjs.com/img/logo-small.svg" alt="Nest Logo" width="100" height="100">
+<div align="center">
+  <img src="https://nestjs.com/img/logo-small.svg" alt="Nest Logo" width="100" height="100">
+</div>
 
 ---
 
