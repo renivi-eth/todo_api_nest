@@ -19,13 +19,12 @@ export class AuthController {
   /**
    * Регистрация пользователя
    */
-
-  // OpenApi Decorators
+  // Swagger
   @ApiOperation({ summary: 'Registration for new User', description: 'Create a new user account with E-mail and Password' })
-  @ApiBody({ type: User_FR_RQ, description: 'User registration data' })
+  @ApiBody({ type: User_FR_RQ, description: 'User registration body' })
   @ApiCreatedResponse({ description: 'User successfully registered', type: User_PG_RS })
-  @ApiResponse({ status: 400, description: 'User with this Email already registered.' })
-
+  @ApiResponse({ status: 400, description: 'User with this Email already registered' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   // Registration
   @Post('registration')
   async registration(@Body() createUserDto: User_FR_RQ): Promise<User_PG_RS> {
@@ -41,8 +40,7 @@ export class AuthController {
   /**
    * Авторизация пользователя
    */
-
-  // OpenApi Decorators
+  // Swagger
   @ApiOperation({ summary: 'User Login', description: 'Authenticate User and return a Bearer token' })
   @ApiBody({ type: User_FR_RQ, description: 'User login data' })
   @HttpCode(HttpStatus.OK)
@@ -57,7 +55,7 @@ export class AuthController {
     description: 'Get access_token',
   })
   @ApiResponse({ status: 401, description: 'User not found or Password is wrong' })
-
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   // Login
   @Post('login')
   async login(@Body() CreateUserDto: User_FR_RQ) {
