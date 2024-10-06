@@ -1,4 +1,4 @@
-# Node.js REST API app ToDo (Nest.js, Knex.js)
+# Node.js REST API app ToDo (Nest.js, PostgreSQL (TypeORM))
 
 ## Инициализация:
 
@@ -11,18 +11,22 @@ cd todo_api_nest
 # Установка зависимостей:
 npm ci
 
-# Инициализация базы данных:
+# Инициализация базы данных и redis:
 docker-compose up -d
 
 # Запуск сервера:
 npm run start:dev
 ```
 
+![Nest](https://nestjs.com/img/logo-small.svg)
+
 ## DTO
 
 ```bash
 1 (Frontend) <-> 2 (Backend) <-> 3 (PostgreSQL)
 ```
+
+Swagger
 
 FR_RQ - используется как DTO для входящих запросов (Frontend -> Backend), определена для валидации и типизации данных, которые приходят от клиента (Frontend)
 FR_RS - используется как DTO для ответа от Backend к Frontend, определенна для согласованности структуры данных к клиенту
