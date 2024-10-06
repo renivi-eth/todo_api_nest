@@ -113,10 +113,12 @@ export class TagService {
    * Создания связи между задачей и тэгом
    */
   createRelationTagTask = async (tagId: string, taskId: string, userId: string) => {
-    const [task, tag] = await Promise.all([
+    const [[task], [tag]] = await Promise.all([
       this.tagRepository.query('SELECT id FROM task WHERE id = $1 AND user_id = $2', [taskId, userId]),
       this.tagRepository.query('SELECT id FROM tag WHERE id = $1 AND user_id = $2', [tagId, userId]),
     ]);
+
+    console.log(task);
 
     if (!task) {
       throw new UnauthorizedException(ExceptionError.TASK_NOT_FOUND);

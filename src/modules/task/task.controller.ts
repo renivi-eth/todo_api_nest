@@ -3,7 +3,7 @@ import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { CurrentUserId } from 'src/lib/decorators/current-user-id';
 import { TaskIdParam } from 'src/lib/dto/dto-request/task-id-request';
 import { Task_FR_RQ } from '../../lib/dto/dto-request/task-fr-request';
-import { BadResponse } from 'src/lib/swagger/invalid-response-swagger';
+import { BadResponse } from 'src/lib/swagger/common-invalid-response-swagger';
 import { Task_PG_RS } from '../../lib/dto/dto-response/task-pg-response';
 import { TaskQueryDTO } from 'src/lib/dto/dto-query-param-request/task-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';

@@ -2,14 +2,14 @@ import { TagService } from './tag.service';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { Tag_FR_RQ } from 'src/lib/dto/dto-request/tag-fr-request';
 import { CurrentUserId } from 'src/lib/decorators/current-user-id';
+import { Tag_PG_RS } from 'src/lib/dto/dto-response/tag-pg-response';
+import { BadResponse } from 'src/lib/swagger/common-invalid-response-swagger';
 import { TagTask_FR_RQ } from 'src/lib/dto/dto-request/tag-task-fr-request';
 import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BadResponse } from 'src/lib/swagger/invalid-response-swagger';
-
-import { Tag_PG_RS } from 'src/lib/dto/dto-response/tag-pg-response';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Task_Tag_PG_RS } from 'src/lib/dto/dto-response/task-tag-pg-response';
+import { TaskTagBadResponse } from 'src/lib/swagger/task-tag-relation-invalid-response-swagger';
 
 @ApiTags('Tag')
 @ApiBearerAuth()
@@ -41,16 +41,34 @@ export class TagController {
     return this.tagService.createTag(tagDto, userId);
   }
 
+  @ApiOperation({
+    summary: 'Get tag by id (UUID)',
+    description: 'Get tag by id (UUID) by path param',
+  })
+  @ApiResponse({ status: 200, type: Tag_PG_RS })
+  @BadResponse()
   @Get(':tagId')
   async getUserTagById(@Param('tagId') tagId: string, @CurrentUserId() userId: string) {
     return this.tagService.getTagById(tagId, userId);
   }
 
+  @ApiOperation({
+    summary: 'Сhange tag',
+    description: 'Change a user tag by ID (UUID)',
+  })
+  @ApiResponse({ status: 200, description: 'Tag successfully changed', type: Tag_PG_RS })
+  @BadResponse()
   @Put(':tagId')
   async updateTag(@Body() tagDto: Tag_FR_RQ, @Param('tagId') tagId: string, @CurrentUserId() userId: string) {
     return this.tagService.updateTag(tagDto, tagId, userId);
   }
 
+  @ApiOperation({
+    summary: 'Delete task',
+    description: 'Delete tag by ID (UUID)',
+  })
+  @ApiResponse({ status: 200, description: 'Tag successfully deleted', type: Tag_PG_RS })
+  @BadResponse()
   @Delete(':tagId')
   async deleteTag(@Param('tagId') tagId: string, @CurrentUserId() userId: string) {
     return this.tagService.deleteTag(tagId, userId);
@@ -59,6 +77,11 @@ export class TagController {
   /**
    * Связь тэга с задачей
    */
+  @ApiOperation({
+    summary: 'Create relation between tag and task',
+  })
+  @ApiCreatedResponse({ status: 201, description: 'Relation successfully created', type: Task_Tag_PG_RS })
+  @TaskTagBadResponse()
   @Post(':tagId/task/:taskId')
   async tagTaskRelation(@Param() { taskId, tagId }: TagTask_FR_RQ, @CurrentUserId() userId: string) {
     return this.tagService.createRelationTagTask(tagId, taskId, userId);
