@@ -27,7 +27,7 @@ export class Tag {
 
   // Много тэгов должны относится к одному пользователю
   @ManyToOne(() => User, (user) => user.tags, { onDelete: 'CASCADE' })
-  // TODO: описать почему
+  // Внешний ключ для связи сущности с пользователем, referencecColumnName - колонка id в user это ключ для user_id в tag.
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 }
