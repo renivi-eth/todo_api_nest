@@ -18,7 +18,7 @@ docker-compose up -d
 npm run start:dev
 ```
 
-![Nest](https://nestjs.com/img/logo-small.svg)
+<img src="https://nestjs.com/img/logo-small.svg" alt="Nest Logo" width="100" height="100">
 
 ## DTO
 
