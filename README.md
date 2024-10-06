@@ -28,7 +28,7 @@ npm run start:dev
 
 Конфигурация TypeOrmModule:
 
-````bash
+```bash
    {
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -40,12 +40,9 @@ npm run start:dev
       migrations: [join(__dirname, '/../database/migrations/*{.js,.ts}')],
       synchronize: false,
     }
-    ```
+```
 
-
-```bash
 1 (Frontend) <-> 2 (Backend) <-> 3 (PostgreSQL)
-````
 
 FR_RQ - используется как DTO для входящих запросов (Frontend -> Backend), определена для валидации и типизации данных, которые приходят от клиента (Frontend)
 FR_RS - используется как DTO для ответа от Backend к Frontend, определенна для согласованности структуры данных к клиенту
