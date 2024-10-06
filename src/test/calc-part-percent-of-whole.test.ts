@@ -1,12 +1,12 @@
 import { calcPartPercentOfWhole } from '../lib/utils/calc-part-percent-of-whole';
 describe('Unit test for calcPartPercentOfWhole functions', () => {
   //
-  test('Результат должден возвращать правильное процентное соотношение', () => {
+  test('Результат должен возвращать правильное процентное соотношение', () => {
     // Для целых чисел
     expect(calcPartPercentOfWhole(10, 100)).toBe(10);
     // Для целых чисел
     expect(calcPartPercentOfWhole(20, 100)).toBe(20);
-    // Для отрицительных чисел
+    // Для отрицательных чисел
     expect(calcPartPercentOfWhole(-10, 100)).toBe(-10);
   });
 
