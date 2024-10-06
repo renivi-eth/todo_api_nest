@@ -20,6 +20,7 @@ dotenv.config();
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       entities: [join(__dirname, '/../database/entities/*.entity{.ts,.js}')],
+      migrations: [join(__dirname, '/../database/migrations/*{.js,.ts}')],
       synchronize: false,
     }),
 
