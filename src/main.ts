@@ -22,7 +22,6 @@ async function bootstrap() {
     .setTitle('Todo API with NestJS')
     .setDescription('API developed throughout the API with NestJS course')
     .setVersion('1.0')
-    .addTag('Nest Todo API')
     .addBearerAuth()
     .build();
 
