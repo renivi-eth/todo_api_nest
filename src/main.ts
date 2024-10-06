@@ -11,6 +11,8 @@ const API_VERSION = process.env.API_VERSION;
 const port = process.env.APP_PORT ?? 3001;
 
 async function bootstrap() {
+  const startTimestamp = Date.now();
+
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix(API_VERSION);
@@ -34,7 +36,18 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  Logger.log(`Server is started on ${port} port!`, bootstrap.name);
+  printWelcomeMessage(startTimestamp);
 }
+
+const printWelcomeMessage = (startTimestamp: number) => {
+  Logger.warn('---------------------------------------------');
+
+  Logger.log('Server started successfully in ' + (Date.now() - startTimestamp) + 'ms');
+
+  Logger.log(`Server is running on http://localhost:${port}/${API_VERSION}`);
+  Logger.log(`API documentation is running on http://localhost:${port}/api`);
+
+  Logger.warn('---------------------------------------------');
+};
 
 bootstrap();
