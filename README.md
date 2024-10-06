@@ -42,9 +42,7 @@ PG-RS - PostgreSQL Response
 
 Это приложения имеет документацию Swagger, не стеняйтесь в нее заглянуть:
 
-```bash
 [http://localhost:3000/api](http://localhost:3000/api)
-```
 
 # Особенности:
 
