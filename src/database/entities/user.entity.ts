@@ -4,9 +4,11 @@ import { Tag } from './tag.entity';
 
 @Entity('user')
 export class User {
+  // id
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  // email max 256 unique / not null
   @Column({
     type: 'varchar',
     length: 256,
@@ -15,15 +17,18 @@ export class User {
   })
   email: string;
 
+  // password
   @Column({
     type: 'text',
     nullable: false,
   })
   password: string;
 
+  // created_at
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
+  // updated_at
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
