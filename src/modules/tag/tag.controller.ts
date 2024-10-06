@@ -3,13 +3,13 @@ import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { Tag_FR_RQ } from 'src/lib/dto/dto-request/tag-fr-request';
 import { CurrentUserId } from 'src/lib/decorators/current-user-id';
 import { Tag_PG_RS } from 'src/lib/dto/dto-response/tag-pg-response';
-import { BadResponse } from 'src/lib/swagger/common-invalid-response-swagger';
 import { TagTask_FR_RQ } from 'src/lib/dto/dto-request/tag-task-fr-request';
-import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Task_Tag_PG_RS } from 'src/lib/dto/dto-response/task-tag-pg-response';
-import { TaskTagBadResponse } from 'src/lib/swagger/task-tag-relation-invalid-response-swagger';
+import { BadResponse } from 'src/lib/decorators/common-invalid-response-swagger';
+import { TagsQueryDTO } from 'src/lib/dto/dto-query-param-request/tag-query-request';
+import { TaskTagBadResponse } from 'src/lib/decorators/task-tag-relation-invalid-response-swagger';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Tag')
 @ApiBearerAuth()
@@ -18,6 +18,10 @@ import { TaskTagBadResponse } from 'src/lib/swagger/task-tag-relation-invalid-re
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
+  /**
+   * Получить все тэги
+   */
+  // Swagger
   @ApiOperation({
     summary: 'Get all user tasks with Query params',
     description: 'Get all user task with Query Param - limit, state, sort property, sort direction',
@@ -29,6 +33,10 @@ export class TagController {
     return this.tagService.getAllTag(userId, query);
   }
 
+  /**
+   * Cоздать тэг
+   */
+  // Swagger
   @ApiOperation({
     summary: 'Create a new tag',
     description: 'Create a new tag with name',
@@ -41,6 +49,10 @@ export class TagController {
     return this.tagService.createTag(tagDto, userId);
   }
 
+  /**
+   * Получить тэг по id
+   */
+  // Swagger
   @ApiOperation({
     summary: 'Get tag by id (UUID)',
     description: 'Get tag by id (UUID) by path param',
@@ -52,6 +64,10 @@ export class TagController {
     return this.tagService.getTagById(tagId, userId);
   }
 
+  /**
+   * Изменить тэг по id
+   */
+  // Swagger
   @ApiOperation({
     summary: 'Сhange tag',
     description: 'Change a user tag by ID (UUID)',
@@ -63,6 +79,10 @@ export class TagController {
     return this.tagService.updateTag(tagDto, tagId, userId);
   }
 
+  /**
+   * Удалить тэг по id
+   */
+  // Swagger
   @ApiOperation({
     summary: 'Delete task',
     description: 'Delete tag by ID (UUID)',
@@ -75,8 +95,9 @@ export class TagController {
   }
 
   /**
-   * Связь тэга с задачей
+   * Связать тэг с задачей
    */
+  // Swagger
   @ApiOperation({
     summary: 'Create relation between tag and task',
   })
