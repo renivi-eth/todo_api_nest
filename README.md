@@ -55,6 +55,8 @@ npm run start:dev
 PG-RQ - PostgreSQL Request
 PG-RS - PostgreSQL Response
 
+---
+
 # NPM scripts
 
 - `npm start` - Запустить приложение
@@ -62,15 +64,21 @@ PG-RS - PostgreSQL Response
 - `npm run test` - Запустить Unit (Jest) тесты
 - `npm run start:prod` - Cобрать приложение
 
+---
+
 # Authentication
 
 Приложение использует JSON Web Token (JWT) для проверки аутентификации пользователя, логика работы реализована в `Auth.guard.ts`
+
+---
 
 # Swagger API docs
 
 Это приложения имеет документацию Swagger, не стеняйтесь в нее заглянуть:
 
 [http://localhost:3000/api](http://localhost:3000/api)
+
+---
 
 # Особенности:
 
