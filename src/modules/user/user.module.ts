@@ -4,9 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
 
 @Module({
-  // Используем модульный подход
   imports: [TypeOrmModule.forFeature([User])],
-  // Экспортируем сервис, для работы сервиса в других модулях
+
   exports: [UserService],
 
   providers: [UserService],

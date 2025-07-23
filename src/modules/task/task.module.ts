@@ -6,7 +6,6 @@ import { TaskController } from './task.controller';
 import { Task } from 'src/database/entities/task.entity';
 
 @Module({
-  // Используем модульный подход
   imports: [AuthModule, TypeOrmModule.forFeature([Task])],
 
   exports: [],
