@@ -74,7 +74,7 @@ PG-RS - PostgreSQL Response
 
 # Swagger API docs
 
-Это приложения имеет документацию Swagger, не стеняйтесь в нее заглянуть:
+Это приложения имеет документацию Swagger, не стесняйтесь в нее заглянуть:
 
 [http://localhost:3000/api](http://localhost:3000/api)
 
