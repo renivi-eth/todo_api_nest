@@ -1,8 +1,10 @@
 # NestJS REST API TODO app (PostgreSQL,TypeORM)
 
-<div align="center">
-  <img src="https://nestjs.com/img/logo-small.svg" alt="Nest Logo" width="100" height="100">
-</div>
+---
+
+# Architecture
+
+![Project architecture](./assets/todo-api-nest-architecture.png)
 
 ---
 
@@ -44,6 +46,8 @@ npm run start:dev
     }
 ```
 
+
+
 ## DTO
 
 `(Frontend) <-> 2 (Backend) <-> 3 (PostgreSQL)`
@@ -57,6 +61,8 @@ PG-RS - PostgreSQL Response
 
 ---
 
+
+
 # NPM scripts
 
 - `npm start` - Запустить приложение
@@ -66,11 +72,15 @@ PG-RS - PostgreSQL Response
 
 ---
 
+
+
 # Authentication
 
 Приложение использует JSON Web Token (JWT) для проверки аутентификации пользователя, логика работы реализована в `Auth.guard.ts`
 
 ---
+
+
 
 # Swagger API docs
 
@@ -80,7 +90,10 @@ PG-RS - PostgreSQL Response
 
 ---
 
+
+
 # Особенности:
 
 1. В проекте используется модульный подход: каждый модуль управляет своей частью функционала и использует соответствующие сущности базы данных, что обеспечивает лучшую организацию и масштабируемость кода. При работе с конкретным модулем мы должны импортировать TypeOrm с нужной для модуля сущностью (entity)
 2. Для логгирования используется Logger модуль (встроенное API)
+
